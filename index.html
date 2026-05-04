@@ -21,6 +21,10 @@ body {
   background: #eef2ed;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 #cartobasemap {
   position: absolute;
   left: -1200px;
@@ -304,6 +308,10 @@ body {
   font-size: 13px;
 }
 
+#mapnotetext {
+  margin: 0;
+}
+
 #toolbtns {
   display: none;
   top: 16px;
@@ -420,6 +428,10 @@ body {
   overflow: hidden;
 }
 
+#popup.population-query-popup {
+  top: var(--population-popup-top, 184px);
+}
+
 #popupbar {
   height: auto;
   min-height: 20px;
@@ -494,6 +506,33 @@ table.measure tr:nth-child(odd) {
 
 .action-btn:hover {
   background: #e9f3ee;
+}
+
+.population-popup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e8e3;
+}
+
+.population-popup__value {
+  margin: 0;
+  color: #126c43;
+  font-size: 24px;
+  font-weight: 850;
+  line-height: 1.05;
+}
+
+.population-popup__badge {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: #f8fffb;
+  background: #126c43;
+  font-size: 11px;
+  font-weight: 750;
 }
 
 #urlbox {
@@ -820,16 +859,21 @@ table.measure tr:nth-child(odd) {
 
 @media (max-width: 720px) {
   #popup, #header, #layerpanel, #narrativebox {
-    left: 12px;
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
+    width: auto;
   }
 
   #header {
-    top: 72px;
-    max-width: calc(100vw - 24px);
+    top: max(10px, env(safe-area-inset-top));
+    max-width: none;
+    z-index: 1300;
   }
 
   #appbrand {
-    padding: 10px 11px;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 9px;
+    padding: 9px 10px;
   }
 
   #appmark {
@@ -840,18 +884,68 @@ table.measure tr:nth-child(odd) {
 
   #apptitle {
     font-size: 14px;
+    line-height: 1.18;
   }
 
   #appsubtitle {
     font-size: 11px;
   }
 
-  #mapnote {
-    top: 146px;
-    right: 12px;
-    left: 12px;
-    max-width: none;
+  #appcontrols {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  #layercontrols {
+    gap: 5px;
+  }
+
+  .layer-control {
+    grid-template-columns: minmax(0, 1fr) 74px;
+    gap: 6px;
     font-size: 11px;
+  }
+
+  .layer-control input[type="range"] {
+    width: 74px;
+  }
+
+  #mapnote {
+    top: var(--mobile-note-top, 132px);
+    right: max(10px, env(safe-area-inset-right));
+    left: max(10px, env(safe-area-inset-left));
+    width: auto;
+    max-width: none;
+    padding: 10px;
+    font-size: 11px;
+    line-height: 1.35;
+    z-index: 1200;
+  }
+
+  #mapnote strong {
+    margin-bottom: 3px;
+    font-size: 12px;
+  }
+
+  #mapnotetext {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  #datasource,
+  #designcredit {
+    margin-top: 6px;
+    padding: 6px 8px;
+    font-size: 10px;
+    line-height: 1.18;
+  }
+
+  #designcredit a {
+    display: inline;
   }
 
   #toolbtns {
@@ -863,22 +957,55 @@ table.measure tr:nth-child(odd) {
   #layerpanel,
   #popup,
   #narrativebox {
-    top: 250px;
-    width: calc(100vw - 24px);
-    max-width: calc(100vw - 24px);
+    top: var(--mobile-popups-top, 228px);
+    width: auto;
+    max-width: none;
+    max-height: calc(100dvh - 300px);
+  }
+
+  #popup.population-query-popup {
+    top: var(--mobile-popups-top, 228px);
   }
 
   #footer {
-    right: 12px;
-    bottom: 12px;
-    left: 12px;
+    right: max(10px, env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: max(10px, env(safe-area-inset-left));
   }
 
   #heightlegend {
-    left: 12px;
-    right: 12px;
-    bottom: 110px;
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
+    width: auto;
+    bottom: var(--mobile-legend-bottom, calc(70px + env(safe-area-inset-bottom)));
     min-width: 0;
+    max-height: min(32dvh, 230px);
+    padding: 10px;
+    overflow: auto;
+    font-size: 10px;
+  }
+
+  #heightlegend strong {
+    font-size: 11px;
+  }
+
+  #heightlegend .range {
+    grid-template-columns: minmax(92px, 34%) 1fr;
+    gap: 6px;
+  }
+
+  #thresholdControl {
+    margin-top: 8px;
+    padding-top: 7px;
+  }
+
+  #populationThreshold {
+    display: block;
+    max-width: 100%;
+  }
+
+  #heightscale span {
+    overflow-wrap: anywhere;
   }
 
   #statsPanel {
@@ -891,14 +1018,31 @@ table.measure tr:nth-child(odd) {
 
   #nav3d {
     top: auto;
-    right: 12px;
-    bottom: 198px;
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: auto;
+    padding: 6px;
+  }
+
+  .navbtn {
+    width: auto;
+    min-width: 0;
+    height: 34px;
+    padding: 0;
+    font-size: 11px;
   }
 
   #maplegend {
     justify-content: space-between;
     gap: 8px;
     font-size: 11px;
+  }
+
+  .population-popup__value {
+    font-size: 21px;
   }
 
   #footercontent {
@@ -922,6 +1066,55 @@ table.measure tr:nth-child(odd) {
 
   .city-label {
     font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  #header,
+  #mapnote,
+  #heightlegend {
+    left: 8px;
+    right: 8px;
+    width: calc(100vw - 16px);
+  }
+
+  #apptitle {
+    font-size: 13px;
+  }
+
+  #appsubtitle {
+    font-size: 10px;
+  }
+
+  .layer-control {
+    grid-template-columns: minmax(0, 1fr) 66px;
+  }
+
+  .layer-control input[type="range"] {
+    width: 66px;
+  }
+
+  #mapnote {
+    top: var(--mobile-note-top, 126px);
+  }
+
+  #datasource {
+    display: none;
+  }
+
+  #heightlegend {
+    bottom: var(--mobile-legend-bottom, calc(66px + env(safe-area-inset-bottom)));
+    max-height: min(30dvh, 206px);
+  }
+
+  #heightscale {
+    font-size: 9px;
+  }
+
+  #nav3d {
+    left: 8px;
+    right: 8px;
+    width: calc(100vw - 16px);
   }
 }
 </style>
@@ -1045,7 +1238,7 @@ table.measure tr:nth-child(odd) {
 </div>
 <div id="mapnote">
   <strong>Breve descripción</strong>
-  Este mapa representa la distribuci&oacute;n de la poblaci&oacute;n metropolitana de Santa Cruz mediante una grilla regular. La altura de cada columna indica la cantidad de poblaci&oacute;n registrada por celda censal. La visualizaci&oacute;n permite identificar la concentraci&oacute;n poblacional y su relaci&oacute;n espacial con el r&iacute;o Pira&iacute;.
+  <p id="mapnotetext">Este mapa representa la distribuci&oacute;n de la poblaci&oacute;n metropolitana de Santa Cruz mediante una grilla regular. La altura de cada columna indica la cantidad de poblaci&oacute;n registrada por celda censal. La visualizaci&oacute;n permite identificar la concentraci&oacute;n poblacional y su relaci&oacute;n espacial con el r&iacute;o Pira&iacute;.</p>
   <div id="datasource">Fuente: INE, Censo de Poblaci&oacute;n y Vivienda 2024. Procesamiento cartogr&aacute;fico propio.</div>
   <div id="designcredit">Dise&ntilde;o: <a href="https://gustavocaceresmartinez.com/" target="_blank" rel="noopener" aria-label="Abrir sitio web de Gustavo Abel C&aacute;ceres Mart&iacute;nez">Gustavo Abel C&aacute;ceres Mart&iacute;nez <svg class="external-link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
 </div>
@@ -1155,9 +1348,20 @@ document.querySelector("#designcredit a").addEventListener("click", function (ev
   event.stopPropagation();
   window.open(this.href, "_blank", "noopener");
 });
+window.addEventListener("resize", function () {
+  syncMobileOverlayLayout();
+  syncPopulationPopupPosition();
+});
+window.addEventListener("orientationchange", function () {
+  setTimeout(function () {
+    syncMobileOverlayLayout();
+    syncPopulationPopupPosition();
+  }, 180);
+});
 document.getElementById("activeLayerSelect").addEventListener("change", applyActiveLayer);
 document.getElementById("resetviewbtn").addEventListener("click", goHomeView);
 document.getElementById("homeviewbtn").addEventListener("click", goHomeView);
+document.getElementById("closebtn").addEventListener("click", clearPopulationPopupState);
 document.getElementById("statsclose").addEventListener("click", closeStatsPanel);
 document.getElementById("populationThreshold").addEventListener("input", function () {
   currentThreshold = Number(this.value);
@@ -1186,6 +1390,7 @@ document.getElementById("zoominbtn").addEventListener("click", function () { zoo
 document.getElementById("zoomoutbtn").addEventListener("click", function () { zoomCamera(1.28); });
 document.getElementById("orbitnavbtn").addEventListener("click", toggleOrbit);
 document.getElementById("topviewbtn").addEventListener("click", topDownView);
+syncMobileOverlayLayout();
 
 var originalLoadData = app.loadData;
 app.loadData = function (data) {
@@ -1239,6 +1444,33 @@ function populationRange(population) {
 function parsePopulation(value) {
   if (!value) return 0;
   return Number(String(value).replace(/[^\d]/g, "")) || 0;
+}
+
+function syncMobileOverlayLayout() {
+  var root = document.documentElement;
+
+  if (window.innerWidth > 720) {
+    root.style.removeProperty("--mobile-note-top");
+    root.style.removeProperty("--mobile-popups-top");
+    root.style.removeProperty("--mobile-legend-bottom");
+    return;
+  }
+
+  var header = document.getElementById("header");
+  var mapnote = document.getElementById("mapnote");
+  var nav = document.getElementById("nav3d");
+  var topGap = window.innerWidth <= 480 ? 6 : 8;
+  var bottomGap = window.innerWidth <= 480 ? 10 : 12;
+  var headerBottom = header.getBoundingClientRect().bottom;
+  var noteTop = Math.ceil(headerBottom + topGap);
+
+  root.style.setProperty("--mobile-note-top", noteTop + "px");
+  root.style.setProperty("--mobile-legend-bottom", Math.ceil(nav.offsetHeight + bottomGap + 10) + "px");
+
+  requestAnimationFrame(function () {
+    var noteBottom = mapnote.getBoundingClientRect().bottom;
+    root.style.setProperty("--mobile-popups-top", Math.ceil(noteBottom + topGap) + "px");
+  });
 }
 
 function applyPopulationThreshold() {
@@ -1313,6 +1545,8 @@ function createLayerControls() {
     row.appendChild(opacity);
     controls.appendChild(row);
   });
+
+  syncMobileOverlayLayout();
 }
 
 function setLayerVisibility(layerId, visible) {
@@ -1374,16 +1608,65 @@ function closeStatsPanel() {
   document.getElementById("statsPanel").classList.remove("open");
 }
 
+function showPopulationPopup(layer, object) {
+  var props = object && object.userData ? object.userData.properties || [] : [];
+  var population = props[0] || "No disponible";
+  var range = props[1] || "Sin rango";
+  var popup = document.getElementById("popup");
+  var content = document.createElement("div");
+  var value = document.createElement("p");
+  var badge = document.createElement("span");
+
+  content.className = "population-popup";
+  value.className = "population-popup__value";
+  badge.className = "population-popup__badge";
+
+  value.textContent = population;
+  badge.textContent = range;
+
+  content.appendChild(value);
+  content.appendChild(badge);
+
+  popup.classList.add("population-query-popup");
+  syncPopulationPopupPosition();
+  gui.popup.show(content, layer && layer.properties ? layer.properties.name : "Poblacion");
+}
+
+function syncPopulationPopupPosition() {
+  var root = document.documentElement;
+  var header = document.getElementById("header");
+
+  if (window.innerWidth <= 720) {
+    root.style.removeProperty("--population-popup-top");
+    return;
+  }
+
+  root.style.setProperty("--population-popup-top", Math.ceil(header.getBoundingClientRect().bottom + 10) + "px");
+}
+
+function clearPopulationPopupState() {
+  document.getElementById("popup").classList.remove("population-query-popup");
+  document.documentElement.style.removeProperty("--population-popup-top");
+}
+
 var originalCleanView = app.cleanView;
 app.cleanView = function () {
   originalCleanView.apply(app, arguments);
+  clearPopulationPopupState();
   closeStatsPanel();
   document.getElementById("orbitnavbtn").classList.toggle("active", app.controls && app.controls.autoRotate);
 };
 
 gui.showQueryResult = function (point, layer, obj) {
-  if (layer && layer.id === populationLayerId) updateStatsPanel(layer, obj);
-  else closeStatsPanel();
+  if (layer && layer.id === populationLayerId) {
+    updateStatsPanel(layer, obj);
+    showPopulationPopup(layer, obj);
+  }
+  else {
+    closeStatsPanel();
+    clearPopulationPopupState();
+    gui.popup.hide();
+  }
 };
 
 Q3D.Config.viewpoint.pos = homeView.camera.clone();
