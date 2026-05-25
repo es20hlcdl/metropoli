@@ -3,22 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <title>MapaPoblacion</title>
-<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <base target="_blank">
 <link rel="stylesheet" type="text/css" href="./Qgis2threejs.css">
 <style type="text/css">
+:root {
+  --bg-body: #dce9d9;
+  --bg-view: #eef2ed;
+  --text-primary: #17201b;
+  --text-secondary: #526058;
+  --bg-panel: rgba(255, 255, 255, 0.72);
+  --border-panel: rgba(255, 255, 255, 0.45);
+  --shadow-panel: rgba(33, 45, 38, 0.08);
+  --bg-hover: #e9f3ee;
+  --accent-color: #126c43;
+  --accent-gradient: linear-gradient(135deg, #126c43, #1aa0a6);
+  --border-divider: #e0e8e3;
+  --row-even: #f2f7f4;
+  --text-inverse: #f8fffb;
+  
+  --legend-r1: #f7fcf5;
+  --legend-r2: #e5f5e0;
+  --legend-r3: #c7e9c0;
+  --legend-r4: #a1d99b;
+  --legend-r5: #74c476;
+  --legend-r6: #31a354;
+  --legend-r7: #006d2c;
+}
+
+html.dark-mode {
+  color-scheme: dark;
+  --bg-body: #101612;
+  --bg-view: #080c09;
+  --text-primary: #ecf3ee;
+  --text-secondary: #a2b0a8;
+  --bg-panel: rgba(20, 26, 23, 0.76);
+  --border-panel: rgba(255, 255, 255, 0.08);
+  --shadow-panel: rgba(0, 0, 0, 0.44);
+  --bg-hover: #1c2721;
+  --accent-color: #1aa0a6;
+  --accent-gradient: linear-gradient(135deg, #1aa0a6, #f2b84b);
+  --border-divider: #26332c;
+  --row-even: #18201c;
+  --text-inverse: #101612;
+  
+  --legend-r1: #1f1a3a;
+  --legend-r2: #481e64;
+  --legend-r3: #781c6d;
+  --legend-r4: #a81c60;
+  --legend-r5: #d02c40;
+  --legend-r6: #e8682c;
+  --legend-r7: #f2b84b;
+}
+
+html.dark-mode #view.sky {
+  background: -webkit-gradient(linear, left top, left bottom, from(#040609), color-stop(0.4, #0b0f16), to(#151b27));
+  background: linear-gradient(to bottom, #040609 0%, #0b0f16 40%, #151b27 100%);
+}
+
 html {
   color-scheme: light;
 }
 
 body {
-  color: #17201b;
-  background: #dce9d9;
+  color: var(--text-primary);
+  background: var(--bg-body);
   font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-#view {
-  background: #eef2ed;
+#view,
+#view.sky {
+  background: var(--bg-view);
+  transition: background 0.4s ease;
 }
 
 *, *::before, *::after {
@@ -41,11 +97,11 @@ body {
   top: 18px;
   z-index: 1000;
   padding: 8px 10px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #526058;
-  background: rgba(255,255,255,0.84);
-  box-shadow: 0 14px 34px rgba(33,45,38,0.16);
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  box-shadow: 0 14px 34px var(--shadow-panel);
   backdrop-filter: blur(14px);
   font-size: 12px;
   pointer-events: auto;
@@ -146,11 +202,11 @@ body {
   align-items: start;
   gap: 12px;
   padding: 14px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #14231a;
-  background: rgba(255,255,255,0.86);
-  box-shadow: 0 16px 38px rgba(33,45,38,0.18);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  box-shadow: 0 16px 38px var(--shadow-panel);
   backdrop-filter: blur(14px);
 }
 
@@ -161,8 +217,8 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  color: #f8fffb;
-  background: linear-gradient(135deg, #126c43, #1aa0a6);
+  color: var(--text-inverse);
+  background: var(--accent-gradient);
   font-weight: 800;
 }
 
@@ -175,7 +231,7 @@ body {
 
 #appsubtitle {
   margin-top: 3px;
-  color: #526058;
+  color: var(--text-secondary);
   font-size: 12px;
   line-height: 1.25;
 }
@@ -215,12 +271,12 @@ body {
 }
 
 .layer-control input[type="checkbox"] {
-  accent-color: #126c43;
+  accent-color: var(--accent-color);
 }
 
 .layer-control input[type="range"] {
   width: 88px;
-  accent-color: #126c43;
+  accent-color: var(--accent-color);
 }
 
 .layer-symbol {
@@ -265,17 +321,35 @@ body {
 #resetviewbtn,
 .navbtn,
 #statsclose {
-  border: 1px solid #cddbd3;
+  border: 1px solid var(--border-panel);
   border-radius: 7px;
-  color: #14231a;
-  background: #f8fbf9;
+  color: var(--text-primary);
+  background: var(--bg-panel);
   font-weight: 750;
   cursor: pointer;
 }
 
-#resetviewbtn,
-#themebtn {
+#resetviewbtn {
   display: none !important;
+}
+
+#themebtn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  min-width: 38px;
+  min-height: 36px;
+  border: 1px solid var(--border-panel);
+  border-radius: 7px;
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+#themebtn:hover {
+  background: var(--bg-hover);
 }
 
 #resetviewbtn {
@@ -290,11 +364,11 @@ body {
   z-index: 2000;
   max-width: min(440px, calc(100vw - 520px));
   padding: 12px 14px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #26342c;
-  background: rgba(255,255,255,0.84);
-  box-shadow: 0 16px 38px rgba(33,45,38,0.18);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  box-shadow: 0 16px 38px var(--shadow-panel);
   backdrop-filter: blur(14px);
   font-size: 12px;
   line-height: 1.45;
@@ -304,7 +378,7 @@ body {
 #mapnote strong {
   display: block;
   margin-bottom: 4px;
-  color: #14231a;
+  color: var(--text-primary);
   font-size: 13px;
 }
 
@@ -319,10 +393,10 @@ body {
   gap: 8px;
   margin: 0;
   padding: 8px;
-  border: 1px solid rgba(255,255,255,0.7);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  background: rgba(255,255,255,0.86);
-  box-shadow: 0 16px 38px rgba(33,45,38,0.18);
+  background: var(--bg-panel);
+  box-shadow: 0 16px 38px var(--shadow-panel);
   backdrop-filter: blur(14px);
 }
 
@@ -359,10 +433,10 @@ body {
   width: min(342px, calc(100vw - 92px));
   max-height: calc(100vh - 126px);
   margin: 0;
-  border: 1px solid rgba(255,255,255,0.7);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  background: rgba(255,255,255,0.9);
-  box-shadow: 0 18px 42px rgba(33,45,38,0.2);
+  background: var(--bg-panel);
+  box-shadow: 0 18px 42px var(--shadow-panel);
   backdrop-filter: blur(14px);
   overflow: hidden auto;
 }
@@ -371,7 +445,7 @@ body {
   display: block;
   padding: 14px 16px 8px;
   content: "Capas del mapa";
-  color: #14231a;
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 750;
   letter-spacing: .02em;
@@ -385,22 +459,22 @@ body {
 .layer {
   margin: 8px 0;
   padding: 10px;
-  border: 1px solid #dde8e1;
+  border: 1px solid var(--border-divider);
   border-radius: 8px;
-  background: rgba(248,251,249,0.9);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .layer > div {
   gap: 7px;
   margin-bottom: 8px;
-  color: #17201b;
+  color: var(--text-primary);
   font-size: 13px;
   line-height: 1.25;
 }
 
 .layer > div:nth-child(n + 2) {
   margin-left: 24px;
-  color: #526058;
+  color: var(--text-secondary);
   font-size: 11px;
 }
 
@@ -420,10 +494,10 @@ body {
   max-width: min(520px, calc(100vw - 92px));
   min-width: min(340px, calc(100vw - 92px));
   margin: 0;
-  border: 1px solid rgba(255,255,255,0.7);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  background: rgba(255,255,255,0.94);
-  box-shadow: 0 18px 42px rgba(33,45,38,0.22);
+  background: var(--bg-panel);
+  box-shadow: 0 18px 42px var(--shadow-panel);
   backdrop-filter: blur(14px);
   overflow: hidden;
 }
@@ -436,8 +510,8 @@ body {
   height: auto;
   min-height: 20px;
   padding: 12px 44px 10px 14px;
-  border-bottom: 1px solid #e0e8e3;
-  color: #14231a;
+  border-bottom: 1px solid var(--border-divider);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 750;
 }
@@ -445,12 +519,12 @@ body {
 #closebtn {
   margin: 8px;
   border-radius: 7px;
-  color: #526058;
+  color: var(--text-secondary);
 }
 
 #closebtn:hover {
-  color: #17201b;
-  background: #e9f3ee;
+  color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 #popupbody {
@@ -459,6 +533,7 @@ body {
 }
 
 #popupbody table {
+  width: 100%;
   border-collapse: collapse;
   overflow: hidden;
   border-radius: 8px;
@@ -468,14 +543,14 @@ body {
 #pageinfo > h1 {
   padding: 7px 9px;
   border-radius: 7px 7px 0 0;
-  color: #f8fffb;
-  background: #126c43;
+  color: var(--text-inverse);
+  background: var(--accent-color);
   font-weight: 700;
 }
 
 #popupbody table td {
   padding: 7px 9px;
-  border-bottom: 1px solid #e5ece8;
+  border-bottom: 1px solid var(--border-divider);
 }
 
 #qr_layername_table {
@@ -491,21 +566,21 @@ body {
 #qr_attrs_table tr:nth-child(odd),
 #usage tr:nth-child(odd),
 table.measure tr:nth-child(odd) {
-  background-color: #f2f7f4;
+  background-color: var(--row-even);
 }
 
 .action-btn {
   padding: 7px 10px;
   margin: 6px 4px 0 0;
-  border: 1px solid #cddbd3;
+  border: 1px solid var(--border-panel);
   border-radius: 7px;
-  color: #14231a;
-  background: #f8fbf9;
+  color: var(--text-primary);
+  background: var(--bg-panel);
   font-weight: 650;
 }
 
 .action-btn:hover {
-  background: #e9f3ee;
+  background: var(--bg-hover);
 }
 
 .population-popup {
@@ -514,12 +589,12 @@ table.measure tr:nth-child(odd) {
   justify-content: space-between;
   gap: 14px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #e0e8e3;
+  border-bottom: 1px solid var(--border-divider);
 }
 
 .population-popup__value {
   margin: 0;
-  color: #126c43;
+  color: var(--accent-color);
   font-size: 24px;
   font-weight: 850;
   line-height: 1.05;
@@ -529,8 +604,8 @@ table.measure tr:nth-child(odd) {
   flex: 0 0 auto;
   padding: 4px 7px;
   border-radius: 999px;
-  color: #f8fffb;
-  background: #126c43;
+  color: var(--text-inverse);
+  background: var(--accent-color);
   font-size: 11px;
   font-weight: 750;
 }
@@ -539,8 +614,10 @@ table.measure tr:nth-child(odd) {
   box-sizing: border-box;
   width: 100%;
   padding: 8px 10px;
-  border: 1px solid #cddbd3;
+  border: 1px solid var(--border-panel);
   border-radius: 7px;
+  background: var(--bg-panel);
+  color: var(--text-primary);
 }
 
 #progress {
@@ -550,7 +627,7 @@ table.measure tr:nth-child(odd) {
 
 #progressbar {
   height: 4px;
-  background: linear-gradient(90deg, #126c43, #1aa0a6);
+  background: var(--accent-gradient);
 }
 
 #footer {
@@ -574,11 +651,11 @@ table.measure tr:nth-child(odd) {
   flex-wrap: wrap;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #26342c;
-  background: rgba(255,255,255,0.84);
-  box-shadow: 0 14px 34px rgba(33,45,38,0.16);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  box-shadow: 0 14px 34px var(--shadow-panel);
   backdrop-filter: blur(14px);
   font-size: 12px;
 }
@@ -586,11 +663,11 @@ table.measure tr:nth-child(odd) {
 #datasource {
   margin-top: 8px;
   padding: 7px 10px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #26342c;
-  background: rgba(255,255,255,0.84);
-  box-shadow: 0 14px 34px rgba(33,45,38,0.16);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  box-shadow: 0 14px 34px var(--shadow-panel);
   backdrop-filter: blur(14px);
   font-size: 11px;
   line-height: 1.2;
@@ -599,11 +676,11 @@ table.measure tr:nth-child(odd) {
 #designcredit {
   margin-top: 6px;
   padding: 7px 10px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #526058;
-  background: rgba(255,255,255,0.84);
-  box-shadow: 0 14px 34px rgba(33,45,38,0.16);
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  box-shadow: 0 14px 34px var(--shadow-panel);
   backdrop-filter: blur(14px);
   font-size: 11px;
   line-height: 1.2;
@@ -637,11 +714,11 @@ table.measure tr:nth-child(odd) {
   z-index: 1000;
   min-width: 260px;
   padding: 12px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  color: #26342c;
-  background: rgba(255,255,255,0.86);
-  box-shadow: 0 14px 34px rgba(33,45,38,0.16);
+  color: var(--text-primary);
+  background: var(--bg-panel);
+  box-shadow: 0 14px 34px var(--shadow-panel);
   backdrop-filter: blur(14px);
   font-size: 11px;
   line-height: 1.35;
@@ -651,13 +728,13 @@ table.measure tr:nth-child(odd) {
 #heightlegend strong {
   display: block;
   margin-bottom: 4px;
-  color: #14231a;
+  color: var(--text-primary);
   font-size: 12px;
 }
 
 #heightlegend .note {
   margin-bottom: 7px;
-  color: #526058;
+  color: var(--text-secondary);
 }
 
 #heightlegend .range {
@@ -684,38 +761,38 @@ table.measure tr:nth-child(odd) {
 #heightlegend .r6 { --bar: 84%; }
 #heightlegend .r7 { --bar: 100%; }
 
-#heightlegend .r1::before { background: #f7fcf5; }
-#heightlegend .r2::before { background: #e5f5e0; }
-#heightlegend .r3::before { background: #c7e9c0; }
-#heightlegend .r4::before { background: #a1d99b; }
-#heightlegend .r5::before { background: #74c476; }
-#heightlegend .r6::before { background: #31a354; }
-#heightlegend .r7::before { background: #006d2c; }
+#heightlegend .r1::before { background: var(--legend-r1); }
+#heightlegend .r2::before { background: var(--legend-r2); }
+#heightlegend .r3::before { background: var(--legend-r3); }
+#heightlegend .r4::before { background: var(--legend-r4); }
+#heightlegend .r5::before { background: var(--legend-r5); }
+#heightlegend .r6::before { background: var(--legend-r6); }
+#heightlegend .r7::before { background: var(--legend-r7); }
 
 #thresholdControl {
   margin-top: 10px;
   padding-top: 9px;
-  border-top: 1px solid rgba(38,52,44,0.12);
+  border-top: 1px solid var(--border-divider);
 }
 
 #thresholdControl label {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  color: #526058;
+  color: var(--text-secondary);
   font-size: 11px;
 }
 
 #populationThreshold {
   width: 100%;
   margin-top: 8px;
-  accent-color: #f2b84b;
+  accent-color: var(--accent-color);
 }
 
 #heightscale {
   display: block;
   margin-top: 8px;
-  color: #526058;
+  color: var(--text-secondary);
   font-size: 10px;
 }
 
@@ -791,10 +868,10 @@ table.measure tr:nth-child(odd) {
   display: grid;
   gap: 7px;
   padding: 8px;
-  border: 1px solid rgba(255,255,255,0.72);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  background: rgba(255,255,255,0.86);
-  box-shadow: 0 16px 38px rgba(33,45,38,0.18);
+  background: var(--bg-panel);
+  box-shadow: 0 16px 38px var(--shadow-panel);
   backdrop-filter: blur(14px);
 }
 
@@ -851,13 +928,17 @@ table.measure tr:nth-child(odd) {
 #narrativebox {
   left: 68px;
   top: 84px;
-  border: 1px solid rgba(255,255,255,0.7);
+  border: 1px solid var(--border-panel);
   border-radius: 8px;
-  background-color: rgba(255,255,255,.93);
-  box-shadow: 0 18px 42px rgba(33,45,38,0.22);
+  background-color: var(--bg-panel);
+  box-shadow: 0 18px 42px var(--shadow-panel);
 }
 
 @media (max-width: 720px) {
+  body {
+    overflow: hidden;
+  }
+
   #popup, #header, #layerpanel, #narrativebox {
     left: max(10px, env(safe-area-inset-left));
     right: max(10px, env(safe-area-inset-right));
@@ -874,6 +955,8 @@ table.measure tr:nth-child(odd) {
     grid-template-columns: 32px minmax(0, 1fr);
     gap: 9px;
     padding: 9px 10px;
+    max-height: calc(42dvh - env(safe-area-inset-top));
+    overflow: auto;
   }
 
   #appmark {
@@ -892,9 +975,15 @@ table.measure tr:nth-child(odd) {
   }
 
   #appcontrols {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 6px;
     margin-top: 6px;
+  }
+
+  #themebtn {
+    min-width: 36px;
+    min-height: 34px;
+    grid-column: 2;
   }
 
   #layercontrols {
@@ -960,7 +1049,22 @@ table.measure tr:nth-child(odd) {
     top: var(--mobile-popups-top, 228px);
     width: auto;
     max-width: none;
-    max-height: calc(100dvh - 300px);
+    max-height: max(140px, calc(100dvh - var(--mobile-popups-top, 228px) - var(--mobile-bottom-ui, 92px)));
+  }
+
+  #popup {
+    min-width: 0;
+  }
+
+  #popupbody {
+    max-height: max(96px, calc(100dvh - var(--mobile-popups-top, 228px) - var(--mobile-bottom-ui, 92px) - 54px));
+    overflow: auto;
+  }
+
+  #popupbody table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   #popup.population-query-popup {
@@ -979,7 +1083,7 @@ table.measure tr:nth-child(odd) {
     width: auto;
     bottom: var(--mobile-legend-bottom, calc(70px + env(safe-area-inset-bottom)));
     min-width: 0;
-    max-height: min(32dvh, 230px);
+    max-height: min(30dvh, 220px);
     padding: 10px;
     overflow: auto;
     font-size: 10px;
@@ -1020,7 +1124,7 @@ table.measure tr:nth-child(odd) {
     top: auto;
     left: max(10px, env(safe-area-inset-left));
     right: max(10px, env(safe-area-inset-right));
-    bottom: calc(10px + env(safe-area-inset-bottom));
+    bottom: calc(8px + env(safe-area-inset-bottom));
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
     width: auto;
@@ -1030,7 +1134,7 @@ table.measure tr:nth-child(odd) {
   .navbtn {
     width: auto;
     min-width: 0;
-    height: 34px;
+    height: 40px;
     padding: 0;
     font-size: 11px;
   }
@@ -1073,9 +1177,20 @@ table.measure tr:nth-child(odd) {
   #header,
   #mapnote,
   #heightlegend {
-    left: 8px;
-    right: 8px;
-    width: calc(100vw - 16px);
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    width: auto;
+  }
+
+  #appbrand {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+  }
+
+  #appmark {
+    width: 30px;
+    height: 30px;
   }
 
   #apptitle {
@@ -1104,7 +1219,19 @@ table.measure tr:nth-child(odd) {
 
   #heightlegend {
     bottom: var(--mobile-legend-bottom, calc(66px + env(safe-area-inset-bottom)));
-    max-height: min(30dvh, 206px);
+    max-height: min(28dvh, 188px);
+    padding: 8px;
+  }
+
+  #heightlegend .range {
+    grid-template-columns: minmax(78px, 35%) 1fr;
+    gap: 5px;
+  }
+
+  #thresholdControl label {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
   }
 
   #heightscale {
@@ -1112,9 +1239,36 @@ table.measure tr:nth-child(odd) {
   }
 
   #nav3d {
-    left: 8px;
-    right: 8px;
-    width: calc(100vw - 16px);
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    width: auto;
+    gap: 4px;
+    padding: 5px;
+  }
+
+  .navbtn {
+    height: 38px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  #appsubtitle,
+  #mapnotetext {
+    display: none;
+  }
+
+  #heightlegend .note,
+  #heightscale {
+    display: none;
+  }
+
+  #heightlegend {
+    max-height: min(24dvh, 150px);
+  }
+
+  #nav3d {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 </style>
@@ -1309,8 +1463,6 @@ table.measure tr:nth-child(odd) {
 </div>
 
 <script>
-
-
 var container = document.getElementById("view"),
     app = Q3D.application,
     gui = Q3D.gui;
@@ -1323,7 +1475,15 @@ var homeView = {
 var populationLayerId = 1;
 var currentThreshold = 0;
 var isTopDownView = false;
-var populationPalette = [0xf7fcf5, 0xe5f5e0, 0xc7e9c0, 0xa1d99b, 0x74c476, 0x31a354, 0x006d2c];
+
+// Light and Dark Palettes
+var lightPalette = [0xf7fcf5, 0xe5f5e0, 0xc7e9c0, 0xa1d99b, 0x74c476, 0x31a354, 0x006d2c];
+var darkPalette = [0x1f1a3a, 0x481e64, 0x781c6d, 0xa81c60, 0xd02c40, 0xe8682c, 0xf2b84b];
+var isDarkMode = localStorage.getItem("theme") === "dark";
+
+if (isDarkMode) {
+  document.documentElement.classList.add("dark-mode");
+}
 
 app.init(container);       // initialize viewer
 
@@ -1374,12 +1534,26 @@ document.getElementById("densefilter").addEventListener("click", function () {
   slider.value = this.classList.contains("active") ? 1912 : 0;
   slider.dispatchEvent(new Event("input"));
 });
+
+// Compare and Urban Filter triggers
+var compareModeActive = false;
+var comparedCells = [];
 document.getElementById("comparefilter").addEventListener("click", function () {
   this.classList.toggle("active");
+  compareModeActive = this.classList.contains("active");
+  comparedCells = [];
+  if (!compareModeActive) {
+    closeStatsPanel();
+  }
 });
+
+var urbanFilterActive = false;
 document.getElementById("urbanfilter").addEventListener("click", function () {
   this.classList.toggle("active");
+  urbanFilterActive = this.classList.contains("active");
+  applyUrbanFilter();
 });
+
 document.getElementById("searchbtn").addEventListener("click", searchPlace);
 document.getElementById("searchinput").addEventListener("keydown", function (event) {
   if (event.key === "Enter") searchPlace();
@@ -1390,6 +1564,16 @@ document.getElementById("zoominbtn").addEventListener("click", function () { zoo
 document.getElementById("zoomoutbtn").addEventListener("click", function () { zoomCamera(1.28); });
 document.getElementById("orbitnavbtn").addEventListener("click", toggleOrbit);
 document.getElementById("topviewbtn").addEventListener("click", topDownView);
+
+// Theme Toggle listener
+document.addEventListener("DOMContentLoaded", function () {
+  var themebtn = document.getElementById("themebtn");
+  if (themebtn) {
+    themebtn.addEventListener("click", toggleTheme);
+  }
+  updateLegendColors();
+});
+
 syncMobileOverlayLayout();
 
 var originalLoadData = app.loadData;
@@ -1410,8 +1594,9 @@ app.loadData = function (data) {
         layer.properties.name = "Población";
         layer.properties.propertyNames = ["Poblacion", "Rango"];
         if (layer.body && Array.isArray(layer.body.materials)) {
+          var palette = isDarkMode ? darkPalette : lightPalette;
           layer.body.materials.forEach(function (material, index) {
-            material.c = populationPalette[index] || populationPalette[populationPalette.length - 1];
+            material.c = palette[index] || palette[palette.length - 1];
           });
         }
       }
@@ -1453,6 +1638,7 @@ function syncMobileOverlayLayout() {
     root.style.removeProperty("--mobile-note-top");
     root.style.removeProperty("--mobile-popups-top");
     root.style.removeProperty("--mobile-legend-bottom");
+    root.style.removeProperty("--mobile-bottom-ui");
     return;
   }
 
@@ -1462,10 +1648,12 @@ function syncMobileOverlayLayout() {
   var topGap = window.innerWidth <= 480 ? 6 : 8;
   var bottomGap = window.innerWidth <= 480 ? 10 : 12;
   var headerBottom = header.getBoundingClientRect().bottom;
+  var navHeight = nav.offsetHeight;
   var noteTop = Math.ceil(headerBottom + topGap);
 
   root.style.setProperty("--mobile-note-top", noteTop + "px");
-  root.style.setProperty("--mobile-legend-bottom", Math.ceil(nav.offsetHeight + bottomGap + 10) + "px");
+  root.style.setProperty("--mobile-legend-bottom", Math.ceil(navHeight + bottomGap + 8) + "px");
+  root.style.setProperty("--mobile-bottom-ui", Math.ceil(navHeight + bottomGap + 18) + "px");
 
   requestAnimationFrame(function () {
     var noteBottom = mapnote.getBoundingClientRect().bottom;
@@ -1590,6 +1778,501 @@ function setLayerOpacity(layerId, opacity) {
   app.render();
 }
 
+// Theme Toggle & Palettes Update
+function toggleTheme() {
+  isDarkMode = !isDarkMode;
+  if (isDarkMode) {
+    document.documentElement.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark");
+  } else {
+    document.documentElement.classList.remove("dark-mode");
+    localStorage.setItem("theme", "light");
+  }
+
+  var styleUrl = isDarkMode 
+    ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json" 
+    : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+  var meshName = isDarkMode ? "CARTO Dark Matter basemap" : "CARTO Positron basemap";
+  
+  if (app.scene) {
+    addBasemap(app.scene, styleUrl, meshName);
+  }
+
+  update3DBarsPalette();
+}
+
+function update3DBarsPalette() {
+  if (!app.sceneLoaded || !app.scene || !app.scene.mapLayers[populationLayerId]) return;
+
+  var palette = isDarkMode ? darkPalette : lightPalette;
+  
+  app.scene.mapLayers[populationLayerId].objectGroup.traverse(function (object) {
+    if (!object.userData || !object.userData.properties) return;
+    
+    var range = object.userData.properties[1];
+    var rangeIndex = 0;
+    if (range === "Muy bajo") rangeIndex = 0;
+    else if (range === "Bajo") rangeIndex = 1;
+    else if (range === "Medio-bajo") rangeIndex = 2;
+    else if (range === "Medio") rangeIndex = 3;
+    else if (range === "Medio-alto") rangeIndex = 4;
+    else if (range === "Alto") rangeIndex = 5;
+    else if (range === "Muy alto") rangeIndex = 6;
+    
+    var colorHex = palette[rangeIndex] || palette[palette.length - 1];
+    
+    if (object.material) {
+      var materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach(function (material) {
+        material.color.setHex(colorHex);
+        material.needsUpdate = true;
+      });
+    }
+  });
+  
+  updateLegendColors();
+  app.render();
+}
+
+function updateLegendColors() {
+  var palette = isDarkMode ? darkPalette : lightPalette;
+  var root = document.documentElement;
+  for (var i = 1; i <= 7; i++) {
+    var colorHexStr = "#" + palette[i - 1].toString(16).padStart(6, '0');
+    root.style.setProperty("--legend-r" + i, colorHexStr);
+  }
+}
+
+// Raycasting & Hover Tooltips
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+var hoveredObject = null;
+var tooltipNode = null;
+
+function createTooltip() {
+  tooltipNode = document.createElement("div");
+  tooltipNode.id = "hover-tooltip";
+  tooltipNode.style.position = "absolute";
+  tooltipNode.style.pointerEvents = "none";
+  tooltipNode.style.zIndex = "2500";
+  tooltipNode.style.padding = "8px 12px";
+  tooltipNode.style.border = "1px solid var(--border-panel)";
+  tooltipNode.style.borderRadius = "8px";
+  tooltipNode.style.background = "var(--bg-panel)";
+  tooltipNode.style.color = "var(--text-primary)";
+  tooltipNode.style.boxShadow = "0 10px 25px var(--shadow-panel)";
+  tooltipNode.style.backdropFilter = "blur(10px)";
+  tooltipNode.style.fontSize = "12px";
+  tooltipNode.style.fontWeight = "650";
+  tooltipNode.style.display = "none";
+  tooltipNode.style.transition = "opacity 0.15s ease, transform 0.15s ease";
+  tooltipNode.style.opacity = "0";
+  tooltipNode.style.transform = "translate(-50%, -100%) translateY(-10px)";
+  document.body.appendChild(tooltipNode);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  createTooltip();
+  
+  // Connect the Tour button
+  var animbtn = document.getElementById("animbtn");
+  if (animbtn) {
+    animbtn.classList.remove("hidden");
+    animbtn.title = "Iniciar Tour Demográfico";
+    animbtn.setAttribute("aria-label", "Iniciar Tour Demográfico");
+    animbtn.className = "playbtn";
+    animbtn.addEventListener("click", startTour);
+  }
+});
+
+container.addEventListener("mousemove", onMouseMove);
+
+function onMouseMove(event) {
+  if (!app.sceneLoaded || !app.camera || !app.scene) return;
+  
+  var rect = container.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  if (tooltipNode) {
+    tooltipNode.style.left = event.clientX + "px";
+    tooltipNode.style.top = event.clientY + "px";
+  }
+
+  raycaster.setFromCamera(mouse, app.camera);
+
+  var popLayer = app.scene.mapLayers[populationLayerId];
+  if (!popLayer || !popLayer.objectGroup || !popLayer.objectGroup.visible) {
+    hideTooltip();
+    return;
+  }
+
+  var intersects = raycaster.intersectObjects(popLayer.objectGroup.children, true);
+  if (intersects.length > 0) {
+    var intersect = intersects[0];
+    var object = intersect.object;
+    
+    while (object && (!object.userData || !object.userData.properties)) {
+      object = object.parent;
+    }
+    
+    if (object && object.userData && object.userData.properties) {
+      if (hoveredObject !== object) {
+        hoveredObject = object;
+        var props = object.userData.properties;
+        var population = props[0] || "No disponible";
+        var range = props[1] || "Sin rango";
+        
+        tooltipNode.innerHTML = "<div style='color: var(--accent-color); font-weight: 850; font-size: 14px; margin-bottom: 2px;'>" + population + "</div><div style='font-size: 11px; opacity: 0.8;'>Rango: " + range + "</div>";
+        tooltipNode.style.display = "block";
+        requestAnimationFrame(function() {
+          tooltipNode.style.opacity = "1";
+          tooltipNode.style.transform = "translate(-50%, -100%) translateY(-10px)";
+        });
+      }
+      return;
+    }
+  }
+
+  hideTooltip();
+}
+
+function hideTooltip() {
+  if (hoveredObject) {
+    hoveredObject = null;
+    if (tooltipNode) {
+      tooltipNode.style.opacity = "0";
+      tooltipNode.style.transform = "translate(-50%, -100%) translateY(-5px)";
+      setTimeout(function() {
+        if (!hoveredObject) tooltipNode.style.display = "none";
+      }, 150);
+    }
+  }
+}
+
+// Sparkline dynamic rendering
+function renderDynamicChart(popVal, range) {
+  var sparkline = document.getElementById("sparkline");
+  if (!sparkline) return;
+  
+  sparkline.innerHTML = "";
+  
+  var popNum = parsePopulation(popVal);
+  var maxPop = 9940;
+  var pct = Math.min(100, (popNum / maxPop) * 100);
+  
+  var bgBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bgBar.setAttribute("x", "0");
+  bgBar.setAttribute("y", "12");
+  bgBar.setAttribute("width", "240");
+  bgBar.setAttribute("height", "8");
+  bgBar.setAttribute("rx", "4");
+  bgBar.setAttribute("fill", "var(--border-divider)");
+  sparkline.appendChild(bgBar);
+  
+  var valBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  valBar.setAttribute("x", "0");
+  valBar.setAttribute("y", "12");
+  valBar.setAttribute("width", "0");
+  valBar.setAttribute("height", "8");
+  valBar.setAttribute("rx", "4");
+  valBar.setAttribute("fill", "var(--accent-color)");
+  valBar.style.transition = "width 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+  sparkline.appendChild(valBar);
+  
+  var labelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  labelText.setAttribute("x", "0");
+  labelText.setAttribute("y", "32");
+  labelText.setAttribute("fill", "var(--text-secondary)");
+  labelText.setAttribute("font-size", "10px");
+  labelText.setAttribute("font-weight", "600");
+  labelText.textContent = pct.toFixed(1) + "% de la densidad pico metropolitana";
+  sparkline.appendChild(labelText);
+  
+  setTimeout(function() {
+    valBar.setAttribute("width", (2.4 * pct).toFixed(1));
+  }, 50);
+}
+
+// Comparison double cells rendering
+function updateComparisonPanel() {
+  var panel = document.getElementById("statsPanel");
+  panel.querySelector("h2").textContent = "Comparación de Celdas";
+  
+  var dl = panel.querySelector("dl");
+  dl.innerHTML = "";
+  
+  if (comparedCells.length === 0) {
+    dl.innerHTML = "<div style='grid-column:1/-1; text-align:center;'>Seleccione una celda para iniciar comparación</div>";
+    return;
+  }
+  
+  if (comparedCells.length === 1) {
+    var c1 = comparedCells[0].object.userData.properties;
+    dl.innerHTML = `
+      <dt style="grid-column: 1/-1; font-weight: 700; color: var(--accent-color);">Celda A</dt>
+      <dt>Población</dt><dd>${c1[0]}</dd>
+      <dt>Rango</dt><dd>${c1[1]}</dd>
+      <div style='grid-column:1/-1; text-align:center; margin-top: 10px; font-size:11px; color: var(--text-secondary);'>Seleccione Celda B en el mapa</div>
+    `;
+    panel.classList.add("open");
+    return;
+  }
+  
+  var c1 = comparedCells[0].object.userData.properties;
+  var c2 = comparedCells[1].object.userData.properties;
+  
+  dl.innerHTML = `
+    <dt style="grid-column: 1/-1; font-weight: 700; color: var(--accent-color);">Comparación</dt>
+    <dt style="font-weight:700;">Dato</dt>
+    <dd style="display:flex; justify-content:space-between; width:100%; font-weight:700;"><span style="color:#1aa0a6;">Celda A</span> <span style="color:#f2b84b;">Celda B</span></dd>
+    
+    <dt>Población</dt>
+    <dd style="display:flex; justify-content:space-between; width:100%;">
+      <span style="color:#1aa0a6; font-weight:750;">${c1[0].replace(" habitantes", "")}</span>
+      <span style="color:#f2b84b; font-weight:750;">${c2[0].replace(" habitantes", "")}</span>
+    </dd>
+    
+    <dt>Rango</dt>
+    <dd style="display:flex; justify-content:space-between; width:100%;">
+      <span style="color:#1aa0a6; font-size:10px; font-weight:700;">${c1[1]}</span>
+      <span style="color:#f2b84b; font-size:10px; font-weight:700;">${c2[1]}</span>
+    </dd>
+  `;
+  
+  var sparkline = document.getElementById("sparkline");
+  sparkline.innerHTML = "";
+  
+  var v1 = parsePopulation(c1[0]);
+  var v2 = parsePopulation(c2[0]);
+  var max = Math.max(v1, v2, 100);
+  
+  var w1 = (240 * v1) / max;
+  var w2 = (240 * v2) / max;
+  
+  var bar1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bar1.setAttribute("x", "0");
+  bar1.setAttribute("y", "6");
+  bar1.setAttribute("width", "0");
+  bar1.setAttribute("height", "10");
+  bar1.setAttribute("rx", "5");
+  bar1.setAttribute("fill", "#1aa0a6");
+  bar1.style.transition = "width 0.4s ease";
+  sparkline.appendChild(bar1);
+  
+  var bar2 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bar2.setAttribute("x", "0");
+  bar2.setAttribute("y", "22");
+  bar2.setAttribute("width", "0");
+  bar2.setAttribute("height", "10");
+  bar2.setAttribute("rx", "5");
+  bar2.setAttribute("fill", "#f2b84b");
+  bar2.style.transition = "width 0.4s ease";
+  sparkline.appendChild(bar2);
+  
+  setTimeout(function() {
+    bar1.setAttribute("width", w1.toFixed(1));
+    bar2.setAttribute("width", w2.toFixed(1));
+  }, 50);
+  
+  panel.classList.add("open");
+}
+
+// Urban Filter handler
+function applyUrbanFilter() {
+  if (!app.sceneLoaded || !app.scene || !app.scene.mapLayers[populationLayerId]) return;
+  
+  app.scene.mapLayers[populationLayerId].objectGroup.traverse(function (object) {
+    if (!object.userData || !object.userData.properties || !object.material) return;
+    
+    var population = parsePopulation(object.userData.properties[0]);
+    var targetOpacity = 1.0;
+    
+    if (urbanFilterActive) {
+      if (population < 187) {
+        targetOpacity = 0.15;
+      }
+    }
+    
+    var materials = Array.isArray(object.material) ? object.material : [object.material];
+    materials.forEach(function (material) {
+      material.transparent = targetOpacity < 1.0;
+      material.opacity = targetOpacity;
+      material.needsUpdate = true;
+    });
+  });
+  
+  app.render();
+}
+
+// Camera cinematic fly
+var cameraAnimation = {
+  active: false,
+  startTime: 0,
+  duration: 1800,
+  startPos: new THREE.Vector3(),
+  endPos: new THREE.Vector3(),
+  startTarget: new THREE.Vector3(),
+  endTarget: new THREE.Vector3(),
+  callback: null
+};
+
+function animateCamera() {
+  if (!cameraAnimation.active) return;
+  
+  var elapsed = performance.now() - cameraAnimation.startTime;
+  var progress = Math.min(1, elapsed / cameraAnimation.duration);
+  var t = (1 - Math.cos(progress * Math.PI)) / 2;
+  
+  app.camera.position.lerpVectors(cameraAnimation.startPos, cameraAnimation.endPos, t);
+  if (app.controls.target !== undefined) {
+    app.controls.target.lerpVectors(cameraAnimation.startTarget, cameraAnimation.endTarget, t);
+  }
+  
+  app.camera.lookAt(app.controls.target);
+  app.updateControlsAndRender();
+  
+  if (progress < 1) {
+    requestAnimationFrame(animateCamera);
+  } else {
+    cameraAnimation.active = false;
+    if (cameraAnimation.callback) cameraAnimation.callback();
+  }
+}
+
+function flyTo(endCam, endTarget, callback) {
+  if (!app.sceneLoaded || !app.camera || !app.controls) return;
+  
+  app.setRotateAnimationMode(false);
+  document.getElementById("orbitnavbtn").classList.remove("active");
+  
+  cameraAnimation.startPos.copy(app.camera.position);
+  cameraAnimation.endPos.copy(endCam);
+  
+  if (app.controls.target !== undefined) {
+    cameraAnimation.startTarget.copy(app.controls.target);
+  } else {
+    cameraAnimation.startTarget.set(0, 0, 0);
+  }
+  cameraAnimation.endTarget.copy(endTarget);
+  
+  cameraAnimation.startTime = performance.now();
+  cameraAnimation.active = true;
+  cameraAnimation.callback = callback;
+  
+  animateCamera();
+}
+
+// Tour demographic narrative data
+var tourSteps = [
+  {
+    title: "1. Panorama Metropolitano",
+    text: "Contempla la distribución completa del área metropolitana de Santa Cruz de la Sierra. La grilla 3D revela cómo la población se expande desde el núcleo central hacia los municipios satélites en un patrón dinámico e interconectado.",
+    camera: new THREE.Vector3(485000, 7926000, 56000),
+    target: new THREE.Vector3(485000, 8051000, 0)
+  },
+  {
+    title: "2. Núcleo Urbano Central",
+    text: "En el corazón de Santa Cruz de la Sierra, los primeros anillos demuestran la densidad de población más elevada. Aquí se concentran servicios comerciales, financieros e institucionales que atraen el mayor flujo humano de la región.",
+    camera: new THREE.Vector3(480800, 8024000, 16000),
+    target: new THREE.Vector3(480800, 8032000, 0)
+  },
+  {
+    title: "3. Eje Warnes - Montero",
+    text: "Hacia el norte, a lo largo del corredor industrial nacional, los municipios de Warnes y Montero registran un crecimiento acelerado. La grilla 3D evidencia la densidad urbana compacta y el auge fabril de este importante conector metropolitano.",
+    camera: new THREE.Vector3(483200, 8056000, 14000),
+    target: new THREE.Vector3(483200, 8075000, 0)
+  },
+  {
+    title: "4. Expansión y el Río Piraí",
+    text: "En el margen oeste, cruzando el río Piraí, Porongo y la zona residencial del Urubó demuestran una expansión baja en altura pero de gran extensión territorial, redefiniendo la frontera metropolitana y planteando nuevos retos de conectividad.",
+    camera: new THREE.Vector3(472200, 8025000, 9000),
+    target: new THREE.Vector3(478200, 8034000, 0)
+  }
+];
+
+var currentTourStep = 0;
+
+function initStorytellingTour() {
+  var narrativeBox = document.getElementById("narrativebox");
+  if (!narrativeBox) return;
+  
+  narrativeBox.innerHTML = `
+    <div id="tourHeader" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid var(--border-divider); padding-bottom:6px;">
+      <span style="font-weight:800; font-size:11px; text-transform:uppercase; color:var(--accent-color); letter-spacing:0.04em;">Tour Demográfico</span>
+      <button id="closeTourBtn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-weight:700; font-size:13px;">×</button>
+    </div>
+    <div id="narbody">
+      <h3 id="tourTitle" style="margin:4px 0 6px 0; font-size:14px; font-weight:800; color:var(--text-primary);"></h3>
+      <p id="tourText" style="margin:0 0 12px 0; font-size:11px; line-height:1.45; color:var(--text-secondary);"></p>
+    </div>
+    <div id="tourControls" style="display:flex; justify-content:space-between; align-items:center;">
+      <span id="tourProgress" style="font-size:10px; font-weight:700; color:var(--text-secondary);">1 / 4</span>
+      <div style="display:flex; gap:6px;">
+        <button id="tourPrevBtn" class="action-btn" style="margin:0; padding:4px 8px; font-size:11px;">Anterior</button>
+        <button id="tourNextBtn" class="action-btn" style="margin:0; padding:4px 8px; font-size:11px; background:var(--accent-color); color:var(--badge-text); border-color:var(--accent-color);">Siguiente</button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById("closeTourBtn").addEventListener("click", stopTour);
+  document.getElementById("tourPrevBtn").addEventListener("click", prevTourStep);
+  document.getElementById("tourNextBtn").addEventListener("click", nextTourStep);
+  
+  currentTourStep = 0;
+  showTourStep(0);
+}
+
+function startTour() {
+  var narrativeBox = document.getElementById("narrativebox");
+  narrativeBox.classList.add("visible");
+  initStorytellingTour();
+}
+
+function stopTour() {
+  var narrativeBox = document.getElementById("narrativebox");
+  narrativeBox.classList.remove("visible");
+}
+
+function showTourStep(index) {
+  currentTourStep = index;
+  var step = tourSteps[index];
+  
+  document.getElementById("tourTitle").textContent = step.title;
+  document.getElementById("tourText").textContent = step.text;
+  document.getElementById("tourProgress").textContent = (index + 1) + " / " + tourSteps.length;
+  
+  document.getElementById("tourPrevBtn").disabled = index === 0;
+  document.getElementById("tourPrevBtn").style.opacity = index === 0 ? "0.4" : "1";
+  
+  var nextBtn = document.getElementById("tourNextBtn");
+  if (index === tourSteps.length - 1) {
+    nextBtn.textContent = "Finalizar";
+  } else {
+    nextBtn.textContent = "Siguiente";
+  }
+  
+  var worldCam = mapVectorToWorld(step.camera);
+  var worldTarget = mapVectorToWorld(step.target);
+  
+  flyTo(worldCam, worldTarget);
+}
+
+function nextTourStep() {
+  if (currentTourStep < tourSteps.length - 1) {
+    showTourStep(currentTourStep + 1);
+  } else {
+    stopTour();
+    goHomeView();
+  }
+}
+
+function prevTourStep() {
+  if (currentTourStep > 0) {
+    showTourStep(currentTourStep - 1);
+  }
+}
+
 function updateStatsPanel(layer, object) {
   var panel = document.getElementById("statsPanel");
   var props = object && object.userData ? object.userData.properties || [] : [];
@@ -1601,6 +2284,9 @@ function updateStatsPanel(layer, object) {
   document.getElementById("statDensity").textContent = "Por celda censal";
   document.getElementById("statVariation").textContent = "Sin serie 2012";
   panel.querySelector("h2").textContent = layer && layer.properties ? layer.properties.name : "Celda censal";
+  
+  renderDynamicChart(population, range);
+  
   panel.classList.add("open");
 }
 
@@ -1659,13 +2345,24 @@ app.cleanView = function () {
 
 gui.showQueryResult = function (point, layer, obj) {
   if (layer && layer.id === populationLayerId) {
-    updateStatsPanel(layer, obj);
-    showPopulationPopup(layer, obj);
+    if (compareModeActive) {
+      if (comparedCells.length >= 2) {
+        comparedCells.shift();
+      }
+      comparedCells.push({ layer: layer, object: obj });
+      updateComparisonPanel();
+      showPopulationPopup(layer, obj);
+    } else {
+      updateStatsPanel(layer, obj);
+      showPopulationPopup(layer, obj);
+    }
   }
   else {
-    closeStatsPanel();
-    clearPopulationPopupState();
-    gui.popup.hide();
+    if (!compareModeActive) {
+      closeStatsPanel();
+      clearPopulationPopupState();
+      gui.popup.hide();
+    }
   }
 };
 
@@ -1683,16 +2380,12 @@ function goHomeView() {
   var camera = mapVectorToWorld(homeView.camera);
   var target = mapVectorToWorld(homeView.target);
 
-  app.camera.position.copy(camera);
-  app.camera.lookAt(target);
-  if (app.controls.target !== undefined) app.controls.target.copy(target);
-  app.setRotateAnimationMode(false);
-  document.getElementById("orbitnavbtn").classList.remove("active");
+  flyTo(camera, target, function() {
+    app.cleanView();
+  });
   isTopDownView = false;
   document.getElementById("topviewbtn").textContent = "2D";
   document.getElementById("topviewbtn").classList.remove("active");
-  app.updateControlsAndRender();
-  app.cleanView();
 }
 
 document.getElementById("homebtn").addEventListener("click", goHomeView);
@@ -1702,8 +2395,9 @@ function zoomCamera(scale) {
 
   var target = app.controls.target;
   var offset = app.camera.position.clone().sub(target).multiplyScalar(scale);
-  app.camera.position.copy(target).add(offset);
-  app.updateControlsAndRender();
+  
+  var endCam = target.clone().add(offset);
+  flyTo(endCam, target);
 }
 
 function adjustCameraPitch(delta) {
@@ -1721,9 +2415,9 @@ function adjustCameraPitch(delta) {
   offset.x *= ratio;
   offset.y *= ratio;
   offset.z = Math.sin(next) * distance;
-  app.camera.position.copy(target).add(offset);
-  app.camera.lookAt(target);
-  app.updateControlsAndRender();
+  
+  var endCam = target.clone().add(offset);
+  flyTo(endCam, target);
 }
 
 function topDownView() {
@@ -1735,15 +2429,13 @@ function topDownView() {
   }
 
   var target = app.controls.target.clone();
-  app.camera.position.set(target.x, target.y, app.scene.userData.baseExtent.width * 0.9);
-  app.camera.lookAt(target);
-  if (app.controls.target !== undefined) app.controls.target.copy(target);
-  app.setRotateAnimationMode(false);
-  document.getElementById("orbitnavbtn").classList.remove("active");
-  isTopDownView = true;
-  document.getElementById("topviewbtn").textContent = "3D";
-  document.getElementById("topviewbtn").classList.add("active");
-  app.updateControlsAndRender();
+  var endCam = new THREE.Vector3(target.x, target.y, app.scene.userData.baseExtent.width * 0.9);
+  
+  flyTo(endCam, target, function() {
+    isTopDownView = true;
+    document.getElementById("topviewbtn").textContent = "3D";
+    document.getElementById("topviewbtn").classList.add("active");
+  });
 }
 
 function toggleOrbit() {
@@ -1977,14 +2669,28 @@ function loadMapLibre(callback) {
   document.head.appendChild(script);
 }
 
-function addCartoPositronBasemap(scene) {
+var activeBasemapMesh = null;
+var activeBasemapMap = null;
+
+function addBasemap(scene, styleUrl, meshName) {
   var status = document.getElementById("basemapstatus");
+  status.classList.remove("hidden");
+  status.textContent = "Cargando mapa base...";
 
   if (!window.maplibregl) {
     loadMapLibre(function () {
-      addCartoPositronBasemap(scene);
+      addBasemap(scene, styleUrl, meshName);
     });
     return;
+  }
+
+  if (activeBasemapMesh) {
+    scene.remove(activeBasemapMesh);
+    activeBasemapMesh = null;
+  }
+  if (activeBasemapMap) {
+    activeBasemapMap.remove();
+    activeBasemapMap = null;
   }
 
   var be = scene.userData.baseExtent;
@@ -1995,11 +2701,24 @@ function addCartoPositronBasemap(scene) {
   var north = be.cy + be.height / 2;
   var sw = utm20sToLonLat(west, south);
   var ne = utm20sToLonLat(east, north);
-  var mapNode = document.getElementById("cartobasemap");
+  
+  var oldMapNode = document.getElementById("cartobasemap");
+  if (oldMapNode) oldMapNode.remove();
+  
+  var mapNode = document.createElement("div");
+  mapNode.id = "cartobasemap";
+  mapNode.style.position = "absolute";
+  mapNode.style.left = "-1200px";
+  mapNode.style.top = "0";
+  mapNode.style.width = "1024px";
+  mapNode.style.height = "1024px";
+  mapNode.style.pointerEvents = "none";
+  mapNode.style.opacity = "0";
+  document.getElementById("view").appendChild(mapNode);
 
-  fetch("https://basemaps.cartocdn.com/gl/positron-gl-style/style.json")
+  fetch(styleUrl)
     .then(function (response) {
-      if (!response.ok) throw new Error("No se pudo cargar el estilo CARTO");
+      if (!response.ok) throw new Error("No se pudo cargar el estilo");
       return response.json();
     })
     .then(function (style) {
@@ -2017,6 +2736,8 @@ function addCartoPositronBasemap(scene) {
         preserveDrawingBuffer: true
       });
 
+      activeBasemapMap = map;
+
       map.once("idle", function () {
         var texture = new THREE.CanvasTexture(map.getCanvas());
         texture.minFilter = THREE.LinearFilter;
@@ -2031,25 +2752,27 @@ function addCartoPositronBasemap(scene) {
         });
         var mesh = new THREE.Mesh(geometry, material);
 
-        mesh.name = "CARTO Positron basemap without labels";
+        mesh.name = meshName;
         mesh.position.set(be.cx - origin.x, be.cy - origin.y, -0.75);
         mesh.renderOrder = -1000;
         scene.add(mesh);
         scene.updateMatrixWorld();
+        
+        activeBasemapMesh = mesh;
         app.render();
 
-        status.textContent = "CARTO Positron sin etiquetas";
+        status.textContent = "Mapa base cargado";
         setTimeout(function () {
           status.classList.add("hidden");
-        }, 1800);
+        }, 1200);
       });
 
       map.on("error", function () {
-        status.textContent = "No se pudo cargar CARTO Positron";
+        status.textContent = "Error de carga de mapa base";
       });
     })
     .catch(function () {
-      status.textContent = "No se pudo cargar CARTO Positron";
+      status.textContent = "Error al conectar con el servidor de mapas base";
     });
 }
 
@@ -2063,7 +2786,11 @@ app.loadSceneFile("./data/index/scene.json", function (scene) {
   applyPopulationThreshold();
 }, function (scene) {
   setTimeout(function () {
-    addCartoPositronBasemap(scene);
+    var styleUrl = isDarkMode 
+      ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json" 
+      : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+    var meshName = isDarkMode ? "CARTO Dark Matter basemap" : "CARTO Positron basemap";
+    addBasemap(scene, styleUrl, meshName);
   }, 0);
 });
 </script>
