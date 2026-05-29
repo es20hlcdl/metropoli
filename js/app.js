@@ -14,6 +14,10 @@ var container = document.getElementById("view"),
     var isolatedColumnObject = null;
     var selectedColumnFootprint = null;
     var satelliteFocusMode = false;
+    var compareModeActive = false;
+    var comparedCells = [];
+    var currentSelectedObject = null;
+    function updateComparisonPanel() {}
 
     // Light and Dark Palettes
     var lightPalette = [0xf7fcf5, 0xe5f5e0, 0xc7e9c0, 0xa1d99b, 0x74c476, 0x31a354, 0x006d2c];
@@ -28,6 +32,50 @@ var container = document.getElementById("view"),
       opacity: 0.78,
       side: THREE.DoubleSide
     });
+
+    var loadingSceneReady = false;
+    var loadingBasemapReady = false;
+    var loadingHideTimer = null;
+    var loadingScreen = document.getElementById("progress");
+    var loadingText = document.getElementById("loadingtext");
+
+    function setLoadingText(message) {
+      if (loadingText) {
+        loadingText.textContent = message;
+      }
+    }
+
+    function hideLoadingScreen(force) {
+      if (!loadingScreen || loadingScreen.classList.contains("is-hidden")) return;
+      if (!loadingSceneReady) return;
+      if (!force && !loadingBasemapReady) return;
+
+      setLoadingText("MAPA LISTO");
+
+      window.setTimeout(function () {
+        loadingScreen.classList.add("is-hidden");
+        loadingScreen.setAttribute("aria-hidden", "true");
+      }, 250);
+    }
+
+    function markLoadingBasemapReady(message) {
+      loadingBasemapReady = true;
+      if (message) {
+        setLoadingText(message);
+      }
+      hideLoadingScreen(false);
+    }
+
+    app.addEventListener("sceneLoaded", function () {
+      loadingSceneReady = true;
+      setLoadingText("PREPARANDO MAPA BASE");
+      hideLoadingScreen(false);
+
+      window.clearTimeout(loadingHideTimer);
+      loadingHideTimer = window.setTimeout(function () {
+        hideLoadingScreen(true);
+      }, 9000);
+    }, true);
 
     // Override highlightFeature to hide the solid 3D highlight object in 2D satellite focus mode
     var originalHighlightFeature = app.highlightFeature;
@@ -320,6 +368,32 @@ var container = document.getElementById("view"),
       app.render();
     }
 
+    function createSingleCellBorder(object) {
+      if (object.userData.borderLine) return;
+
+      var edges = new THREE.EdgesGeometry(object.geometry);
+      var lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x000000, // Elegant black border line
+        linewidth: 1.5,
+        transparent: true,
+        opacity: 0.0
+      });
+      var line = new THREE.LineSegments(edges, lineMaterial);
+      line.matrixAutoUpdate = false;
+      object.add(line);
+      object.userData.borderLine = line;
+    }
+
+    function addCellBorders() {
+      if (!app.sceneLoaded || !app.scene || !app.scene.mapLayers[populationLayerId]) return;
+
+      app.scene.mapLayers[populationLayerId].objectGroup.traverse(function (object) {
+        if (!object.userData || !object.userData.properties) return;
+        createSingleCellBorder(object);
+      });
+      app.render();
+    }
+
     function setPopulation2DMode(enabled) {
       if (!app.sceneLoaded || !app.scene || !app.scene.mapLayers[populationLayerId]) return;
 
@@ -330,7 +404,28 @@ var container = document.getElementById("view"),
           object.userData.originalScaleZ = object.scale.z;
         }
 
+        // Restore original scale X and Y to prevent footprint outline mismatch
+        if (object.userData.originalScaleX !== undefined) {
+          object.scale.x = object.userData.originalScaleX;
+        }
+        if (object.userData.originalScaleY !== undefined) {
+          object.scale.y = object.userData.originalScaleY;
+        }
+
         object.scale.z = enabled ? 0.018 : object.userData.originalScaleZ;
+
+        // Ensure cell borders exist
+        if (!object.userData.borderLine) {
+          createSingleCellBorder(object);
+        }
+
+        // Toggle cell borders visibility and opacity in 2D mode
+        var border = object.userData.borderLine;
+        if (border) {
+          border.visible = enabled;
+          border.material.opacity = enabled ? 0.35 : 0.0;
+          border.material.needsUpdate = true;
+        }
 
         // Apply a premium semi-transparent overlay (55% opacity) in 2D mode 
         // to show Google Maps context underneath, reverting to solid in 3D.
@@ -343,7 +438,8 @@ var container = document.getElementById("view"),
           });
         }
 
-        object.updateMatrixWorld();
+        object.updateMatrix();
+        object.updateMatrixWorld(true);
       });
 
       app.render();
@@ -537,7 +633,7 @@ var container = document.getElementById("view"),
 
       if (renderNow === false) return;
       applyPopulationThreshold();
-      applyUrbanFilter();
+
     }
 
     function applyActiveLayer() {
@@ -785,6 +881,12 @@ var container = document.getElementById("view"),
     function onMouseMove(event) {
       if (!app.sceneLoaded || !app.camera || !app.scene) return;
 
+      // Disable hover tooltip on mobile/touch screens
+      if (window.innerWidth <= 720 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)) {
+        hideTooltip();
+        return;
+      }
+
       var rect = container.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -812,6 +914,11 @@ var container = document.getElementById("view"),
         }
 
         if (object && object.userData && object.userData.properties) {
+          if (currentSelectedObject === object) {
+            hideTooltip();
+            return;
+          }
+
           if (hoveredObject !== object) {
             hoveredObject = object;
             var props = object.userData.properties;
@@ -1182,6 +1289,7 @@ var container = document.getElementById("view"),
     }
 
     function clearPopulationPopupState() {
+      currentSelectedObject = null;
       // Restore the map note on desktop
       if (window.innerWidth > 720) {
         var mapnote = document.getElementById("mapnote");
@@ -1205,6 +1313,8 @@ var container = document.getElementById("view"),
 
     gui.showQueryResult = function (point, layer, obj) {
       if (layer && layer.id === populationLayerId) {
+        currentSelectedObject = obj;
+        hideTooltip();
         if (isolateSelectionActive) {
           isolateColumn(obj);
         }
@@ -1544,6 +1654,7 @@ var container = document.getElementById("view"),
             status.classList.add("hidden");
           }, 3000);
         }
+        markLoadingBasemapReady("MAPA 3D LISTO");
       };
       document.head.appendChild(script);
     }
@@ -2342,6 +2453,7 @@ var container = document.getElementById("view"),
             updateDynamicBasemap(true);
 
             status.textContent = "Mapa base cargado";
+            markLoadingBasemapReady("MAPA BASE CARGADO");
             setTimeout(function () {
               status.classList.add("hidden");
             }, 1200);
@@ -2349,10 +2461,12 @@ var container = document.getElementById("view"),
 
           map.on("error", function () {
             status.textContent = "Error de carga de mapa base";
+            markLoadingBasemapReady("MAPA 3D LISTO");
           });
         })
         .catch(function () {
           status.textContent = "Error al conectar con el servidor de mapas base";
+          markLoadingBasemapReady("MAPA 3D LISTO");
         });
     }
 
@@ -2364,6 +2478,7 @@ var container = document.getElementById("view"),
       createLayerControls();
       applyActiveLayer();
       applyPopulationThreshold();
+      setTimeout(addCellBorders, 150);
     }, function (scene) {
       setTimeout(function () {
         loadActiveBasemap();
