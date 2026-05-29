@@ -2139,9 +2139,9 @@
       }
 
       #navigation {
-        right: 0;
-        bottom: 62px;
-        transform: scale(.82);
+        right: max(8px, env(safe-area-inset-right));
+        bottom: calc(var(--mobile-legend-bottom, calc(72px + env(safe-area-inset-bottom))) + 72px);
+        transform: scale(.78);
         transform-origin: right bottom;
       }
 
@@ -2233,6 +2233,11 @@
       .navbtn {
         width: 36px;
         height: 36px;
+      }
+
+      #navigation {
+        bottom: calc(var(--mobile-legend-bottom, calc(66px + env(safe-area-inset-bottom))) + 64px);
+        transform: scale(.72);
       }
     }
 

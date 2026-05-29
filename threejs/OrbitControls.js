@@ -63,6 +63,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.panSpeed = 1.0;
 	this.screenSpacePanning = false; // if true, pan in screen-space
 	this.keyPanSpeed = 4.0;			// (7.0) pixels moved per arrow key push
+	this.mouseLeftButtonPan = false;
+	this.touchOneFingerPan = false;
 
 	// Set to true to automatically rotate around the target
 	// If auto-rotate is enabled, you must call controls.update() in your animation loop
@@ -681,6 +683,12 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
+	function handleTouchStartPan( event ) {
+
+		panStart.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+
+	}
+
 	function handleTouchStartDollyPan( event ) {
 
 		if ( scope.enableZoom ) {
@@ -718,6 +726,20 @@ THREE.OrbitControls = function ( object, domElement ) {
 		rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight );
 
 		rotateStart.copy( rotateEnd );
+
+		scope.update();
+
+	}
+
+	function handleTouchMovePan( event ) {
+
+		panEnd.set( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY );
+
+		panDelta.subVectors( panEnd, panStart ).multiplyScalar( scope.panSpeed );
+
+		pan( panDelta.x, panDelta.y );
+
+		panStart.copy( panEnd );
 
 		scope.update();
 
@@ -779,11 +801,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			case scope.mouseButtons.LEFT:
 
-				if ( event.ctrlKey || event.metaKey || event.shiftKey ) {		//
+				if ( event.ctrlKey || event.metaKey || event.shiftKey || scope.mouseLeftButtonPan === true ) {		//
 
 					if ( scope.enablePan === false ) return;
 
-					scope.screenSpacePanning = event.shiftKey;		// added @minorua
+					scope.screenSpacePanning = scope.mouseLeftButtonPan === true || event.shiftKey;		// added @minorua
 
 					handleMouseDownPan( event );
 
@@ -815,7 +837,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 				if ( scope.enablePan === false ) return;
 
-				scope.screenSpacePanning = event.shiftKey;		//
+				scope.screenSpacePanning = scope.mouseLeftButtonPan === true || event.shiftKey;		//
 
 				handleMouseDownPan( event );
 
@@ -918,13 +940,25 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		switch ( event.touches.length ) {
 
-			case 1:	// one-fingered touch: rotate
+			case 1:	// one-fingered touch: rotate or pan
 
-				if ( scope.enableRotate === false ) return;
+				if ( scope.touchOneFingerPan === true ) {
 
-				handleTouchStartRotate( event );
+					if ( scope.enablePan === false ) return;
 
-				state = STATE.TOUCH_ROTATE;
+					handleTouchStartPan( event );
+
+					state = STATE.PAN;
+
+				} else {
+
+					if ( scope.enableRotate === false ) return;
+
+					handleTouchStartRotate( event );
+
+					state = STATE.TOUCH_ROTATE;
+
+				}
 
 				break;
 
@@ -961,12 +995,23 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		switch ( event.touches.length ) {
 
-			case 1: // one-fingered touch: rotate
+			case 1: // one-fingered touch: rotate or pan
 
-				if ( scope.enableRotate === false ) return;
-				if ( state !== STATE.TOUCH_ROTATE ) return; // is this needed?
+				if ( scope.touchOneFingerPan === true ) {
 
-				handleTouchMoveRotate( event );
+					if ( scope.enablePan === false ) return;
+					if ( state !== STATE.PAN ) return;
+
+					handleTouchMovePan( event );
+
+				} else {
+
+					if ( scope.enableRotate === false ) return;
+					if ( state !== STATE.TOUCH_ROTATE ) return; // is this needed?
+
+					handleTouchMoveRotate( event );
+
+				}
 
 				break;
 

@@ -368,32 +368,6 @@ var container = document.getElementById("view"),
       app.render();
     }
 
-    function createSingleCellBorder(object) {
-      if (object.userData.borderLine) return;
-
-      var edges = new THREE.EdgesGeometry(object.geometry);
-      var lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x000000, // Elegant black border line
-        linewidth: 1.5,
-        transparent: true,
-        opacity: 0.0
-      });
-      var line = new THREE.LineSegments(edges, lineMaterial);
-      line.matrixAutoUpdate = false;
-      object.add(line);
-      object.userData.borderLine = line;
-    }
-
-    function addCellBorders() {
-      if (!app.sceneLoaded || !app.scene || !app.scene.mapLayers[populationLayerId]) return;
-
-      app.scene.mapLayers[populationLayerId].objectGroup.traverse(function (object) {
-        if (!object.userData || !object.userData.properties) return;
-        createSingleCellBorder(object);
-      });
-      app.render();
-    }
-
     function setPopulation2DMode(enabled) {
       if (!app.sceneLoaded || !app.scene || !app.scene.mapLayers[populationLayerId]) return;
 
@@ -414,26 +388,19 @@ var container = document.getElementById("view"),
 
         object.scale.z = enabled ? 0.018 : object.userData.originalScaleZ;
 
-        // Ensure cell borders exist
-        if (!object.userData.borderLine) {
-          createSingleCellBorder(object);
-        }
-
-        // Toggle cell borders visibility and opacity in 2D mode
-        var border = object.userData.borderLine;
-        if (border) {
-          border.visible = enabled;
-          border.material.opacity = enabled ? 0.35 : 0.0;
-          border.material.needsUpdate = true;
-        }
-
-        // Apply a premium semi-transparent overlay (55% opacity) in 2D mode 
-        // to show Google Maps context underneath, reverting to solid in 3D.
+        // Use the original population color in 2D, with light transparency over the basemap.
         if (object.material) {
           var materials = Array.isArray(object.material) ? object.material : [object.material];
           materials.forEach(function (material) {
-            material.transparent = enabled;
-            material.opacity = enabled ? 0.55 : 1.0;
+            if (material.userData.originalTransparent === undefined) {
+              material.userData.originalTransparent = material.transparent;
+              material.userData.originalOpacity = material.opacity;
+              material.userData.originalDepthWrite = material.depthWrite;
+            }
+
+            material.transparent = enabled ? true : material.userData.originalTransparent;
+            material.opacity = enabled ? 0.55 : material.userData.originalOpacity;
+            material.depthWrite = enabled ? false : material.userData.originalDepthWrite;
             material.needsUpdate = true;
           });
         }
@@ -1380,6 +1347,9 @@ var container = document.getElementById("view"),
       app.controls.enablePan = true;
       app.controls.enableZoom = true;
       app.controls.autoRotate = false;
+      app.controls.mouseLeftButtonPan = enabled;
+      app.controls.touchOneFingerPan = enabled;
+      app.controls.screenSpacePanning = enabled;
 
       if (enabled) {
         app.controls.minPolarAngle = 0;
@@ -2478,7 +2448,6 @@ var container = document.getElementById("view"),
       createLayerControls();
       applyActiveLayer();
       applyPopulationThreshold();
-      setTimeout(addCellBorders, 150);
     }, function (scene) {
       setTimeout(function () {
         loadActiveBasemap();
