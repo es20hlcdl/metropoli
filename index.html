@@ -1,17 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="es-BO">
 
 <head>
   <meta charset="UTF-8">
-  <title>Mapa 3D de Población Metropolitana - Santa Cruz</title>
+  <title>Mapa del Área Metropolitana de Santa Cruz | Población 2024</title>
   <meta name="description"
-    content="Visualización interactiva en 3D de la densidad y distribución de la población en el área metropolitana de Santa Cruz de la Sierra, Bolivia.">
-  <meta property="og:title" content="Mapa 3D de Población Metropolitana - Santa Cruz">
+    content="Explora la distribución espacial de la población del Área Metropolitana de Santa Cruz de la Sierra en un mapa interactivo 3D elaborado con datos del Censo 2024 del INE Bolivia.">
+  <meta name="author" content="Gustavo Abel Cáceres Martínez">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://gustavocaceresmartinez.com/metropoli/">
+
+  <!-- Favicon e identidad visual en navegadores y Google Móvil -->
+  <link rel="icon" type="image/svg+xml" href="./assets/gustavo-loader.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/gustavo-loader.png">
+  <link rel="apple-touch-icon" href="./assets/gustavo-loader.png">
+
+  <!-- Open Graph / Redes sociales (WhatsApp, LinkedIn, Facebook) -->
+  <meta property="og:title" content="Mapa del Área Metropolitana de Santa Cruz | Población 2024">
   <meta property="og:description"
-    content="Visualización interactiva en 3D de la densidad y distribución de la población en el área metropolitana de Santa Cruz de la Sierra, Bolivia.">
+    content="Explora la distribución espacial de la población del Área Metropolitana de Santa Cruz de la Sierra en un mapa interactivo 3D elaborado con datos del Censo 2024 del INE Bolivia.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="./Qgis2threejs.png">
+  <meta property="og:url" content="https://gustavocaceresmartinez.com/metropoli/">
+  <meta property="og:locale" content="es_BO">
+  <meta property="og:site_name" content="Gustavo Abel Cáceres Martínez">
+  <meta property="og:image" content="https://gustavocaceresmartinez.com/metropoli/assets/mapa3dpoblacion.png">
+  <meta property="og:image:secure_url"
+    content="https://gustavocaceresmartinez.com/metropoli/assets/mapa3dpoblacion.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="932">
+  <meta property="og:image:height" content="741">
+  <meta property="og:image:alt" content="Visualización interactiva 3D de la población del Área Metropolitana de Santa Cruz de la Sierra">
+
+  <!-- Twitter Cards (X) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mapa del Área Metropolitana de Santa Cruz | Población 2024">
+  <meta name="twitter:description"
+    content="Explora la distribución espacial de la población del Área Metropolitana de Santa Cruz de la Sierra con datos del Censo 2024 del INE Bolivia.">
+  <meta name="twitter:image"
+    content="https://gustavocaceresmartinez.com/metropoli/assets/mapa3dpoblacion.png">
+  <meta name="twitter:image:alt" content="Visualización interactiva 3D de la población del Área Metropolitana de Santa Cruz de la Sierra">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://gustavocaceresmartinez.com/metropoli/#webpage",
+          "url": "https://gustavocaceresmartinez.com/metropoli/",
+          "name": "Mapa del Área Metropolitana de Santa Cruz | Población 2024",
+          "description": "Explora la distribución espacial de la población del Área Metropolitana de Santa Cruz de la Sierra en un mapa interactivo 3D elaborado con datos del Censo 2024 del INE Bolivia.",
+          "inLanguage": "es-BO",
+          "isPartOf": {
+            "@id": "https://gustavocaceresmartinez.com/#website"
+          },
+          "mainEntity": {
+            "@id": "https://gustavocaceresmartinez.com/metropoli/#map"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://gustavocaceresmartinez.com/#website",
+          "url": "https://gustavocaceresmartinez.com/",
+          "name": "Gustavo Abel Cáceres Martínez",
+          "inLanguage": "es-BO"
+        },
+        {
+          "@type": "Person",
+          "@id": "https://gustavocaceresmartinez.com/#person",
+          "name": "Gustavo Abel Cáceres Martínez",
+          "url": "https://gustavocaceresmartinez.com/"
+        },
+        {
+          "@type": "Map",
+          "@id": "https://gustavocaceresmartinez.com/metropoli/#map",
+          "url": "https://gustavocaceresmartinez.com/metropoli/",
+          "name": "Mapa de población del Área Metropolitana de Santa Cruz",
+          "description": "Mapa interactivo 3D para explorar la distribución espacial de la población del Área Metropolitana de Santa Cruz de la Sierra con datos del Censo de Población y Vivienda 2024.",
+          "inLanguage": "es-BO",
+          "keywords": "mapa área metropolitana Santa Cruz, población área metropolitana Santa Cruz, mapa población Santa Cruz, población Santa Cruz 2024, Censo 2024 Santa Cruz",
+          "contentLocation": {
+            "@type": "Place",
+            "name": "Área Metropolitana de Santa Cruz de la Sierra, Bolivia"
+          },
+          "author": {
+            "@id": "https://gustavocaceresmartinez.com/#person"
+          },
+          "isBasedOn": {
+            "@type": "Dataset",
+            "name": "Censo de Población y Vivienda 2024",
+            "url": "https://cpv2024.ine.gob.bo/",
+            "creator": {
+              "@type": "GovernmentOrganization",
+              "name": "Instituto Nacional de Estadística de Bolivia",
+              "url": "https://www.ine.gob.bo/"
+            }
+          }
+        }
+      ]
+    }
+  </script>
   <base target="_blank">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +124,53 @@
     <div id="northarrow"></div>
     <div id="navigation"></div>
   </div>
+
+  <!-- Contenido principal e introducción del mapa -->
+  <main id="header" aria-labelledby="apptitle">
+    <div id="appbrand">
+      <div id="appmark" aria-hidden="true">SC</div>
+      <div id="appheading">
+        <h1 id="apptitle">Mapa de población del Área Metropolitana de Santa Cruz</h1>
+        <div id="appsubtitle">Santa Cruz de la Sierra, Bolivia</div>
+      </div>
+      <div id="appcontrols">
+        <button id="layertoggle" type="button" aria-expanded="true" aria-controls="layercontrols"
+          aria-label="Abrir capas">Capas</button>
+        <select id="activeLayerSelect" aria-label="Capa activa">
+          <option value="all">Todas las capas</option>
+          <option value="population">Poblaci&oacute;n por celda censal</option>
+          <option value="river">R&iacute;o Pira&iacute;</option>
+        </select>
+      </div>
+
+      <section id="mapnote" aria-label="Información del mapa">
+        <div class="brief-desc-container">
+          <h2 class="brief-desc-title">Breve descripción</h2>
+          <p class="brief-desc-text">
+            Este mapa representa la distribución de la población metropolitana de Santa Cruz mediante una grilla regular. La altura de cada columna indica la cantidad de población registrada por celda censal. La visualización permite identificar la concentración poblacional y su relación espacial con el río Piraí.
+          </p>
+
+          <div class="brief-meta-card">
+            <div class="brief-meta-item">
+              <span class="brief-meta-label">Fuente:</span> INE, Censo de Población y Vivienda 2024. Procesamiento cartográfico propio.
+            </div>
+            <div class="brief-meta-item">
+              <span class="brief-meta-label">Diseño:</span> <a href="https://gustavocaceresmartinez.com/" target="_blank" rel="author">Gustavo Abel Cáceres Martínez <svg class="external-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+            </div>
+          </div>
+
+          <button id="open-info-modal" class="btn-saber-mas" type="button" aria-haspopup="dialog" aria-controls="info-modal">
+            <span>Saber más</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
 
   <!-- popup -->
   <div id="popup">
@@ -77,7 +212,8 @@
       </div>
 
       <!-- page info -->
-      <div id="pageinfo">
+      <aside id="pageinfo" class="viewer-technical-content" aria-label="Ayuda técnica del visor 3D">
+        <div data-nosnippet>
         <h2>Current View URL</h2>
         <div><input id="urlbox" type="text"></div>
 
@@ -141,14 +277,15 @@
         </table>
 
         <h2>About</h2>
-        <div id="about"><img src="./Qgis2threejs.png">
+        <div id="about"><img src="./Qgis2threejs.png" alt="Qgis2threejs" width="64" height="64">
           This page was made with <a href="https://www.qgis.org/">QGIS</a> and <a
             href="https://github.com/minorua/Qgis2threejs">Qgis2threejs</a> plugin (version 2.10).
           <div>Powered by <a href="https://threejs.org/">three.js</a>
             <span id="lib_proj4js"> and <a href="https://trac.osgeo.org/proj4js/">Proj4js</a></span>.
           </div>
         </div>
-      </div>
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -158,7 +295,7 @@
       <div id="loadingring" aria-hidden="true">
         <div id="progressbar"></div>
       </div>
-      <div id="loadingtitle">Mapa 3D de Poblacion Metropolitana</div>
+      <div id="loadingtitle">Mapa 3D de población metropolitana</div>
       <div id="loadingcredit">Gustavo Abel C&aacute;ceres Mart&iacute;nez</div>
       <div id="loadingtext">CARGANDO MAPA 3D</div>
     </div>
@@ -172,49 +309,7 @@
     <div id="infobtn"></div>
   </div>
 
-  <!-- header and footer -->
-  <div id="header">
-    <div id="appbrand">
-      <div id="appmark">SC</div>
-      <div>
-        <h1 id="apptitle">Mapa 3D de Poblacion Metropolitana</h1>
-        <div id="appsubtitle">Área metropolitana de Santa Cruz</div>
-      </div>
-      <div id="appcontrols">
-        <button id="layertoggle" type="button" aria-expanded="true" aria-controls="layercontrols"
-          aria-label="Abrir capas">Capas</button>
-        <select id="activeLayerSelect" aria-label="Capa activa">
-          <option value="all">Todas las capas</option>
-          <option value="population">Poblaci&oacute;n por celda censal</option>
-          <option value="river">R&iacute;o Pira&iacute;</option>
-        </select>
-      </div>
-
-      <div id="mapnote">
-        <div id="mobileMapTitle">Mapa 3D de Poblacion Metropolitana</div>
-        <strong>Breve descripción</strong>
-        <p id="mapnotetext">Este mapa representa la distribuci&oacute;n de la poblaci&oacute;n metropolitana de Santa
-          Cruz
-          mediante una grilla regular. La altura de cada columna indica la cantidad de poblaci&oacute;n registrada por
-          celda
-          censal. La visualizaci&oacute;n permite identificar la concentraci&oacute;n poblacional y su relaci&oacute;n
-          espacial con el r&iacute;o Pira&iacute;.</p>
-        <button id="mapnoteToggle" type="button" aria-expanded="false" aria-controls="mapnotetext">Ver mas</button>
-        <div id="datasource">Fuente: INE, Censo de Poblaci&oacute;n y Vivienda 2024. Procesamiento cartogr&aacute;fico
-          propio.</div>
-        <div id="designcredit">Dise&ntilde;o: <a href="https://gustavocaceresmartinez.com/" target="_blank"
-            rel="noopener" aria-label="Abrir sitio web de Gustavo Abel C&aacute;ceres Mart&iacute;nez">Gustavo Abel
-            C&aacute;ceres
-            Mart&iacute;nez <svg class="external-link-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
-                stroke-linejoin="round" />
-              <path d="M20 4l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
-              <path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" fill="none" stroke="currentColor"
-                stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-            </svg></a></div>
-      </div>
-    </div>
-  </div>
+  <!-- Controles superpuestos y leyendas -->
   <div id="top-right-controls">
     <button id="desktop-layer-toggle" title="Capas del mapa" aria-label="Capas del mapa" aria-expanded="false"
       aria-controls="layercontrols">
@@ -247,7 +342,7 @@
     <div id="footercontent">
       <div id="maplegend">
         <span class="legenditem"><span class="swatch population"></span>Población</span>
-        <span class="legenditem"><span class="swatch river"></span>Rio Piraí</span>
+        <span class="legenditem"><span class="swatch river"></span>Río Piraí</span>
       </div>
     </div>
   </div>
@@ -267,10 +362,10 @@
     <div class="range r6">1.912 - 3.307 hab.</div>
     <div class="range r7">3.307 - 9.940 hab.</div>
 
-    <div id="heightscale"><span>Escala de altura: columna mas alta = 9.940 hab.</span></div>
+    <div id="heightscale"><span>Escala de altura: columna más alta = 9.940 hab.</span></div>
   </div>
 
-  <aside id="statsPanel" aria-live="polite" aria-label="Estadisticas de celda seleccionada">
+  <aside id="statsPanel" aria-live="polite" aria-label="Estadísticas de celda seleccionada">
     <button id="statsclose" aria-label="Cerrar panel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
         focusable="false">
@@ -279,13 +374,13 @@
       </svg></button>
     <h2>Celda censal</h2>
     <dl>
-      <dt>Poblacion</dt>
+      <dt>Población</dt>
       <dd id="statPopulation">Seleccione una celda</dd>
       <dt>Rango</dt>
       <dd id="statRange">-</dd>
       <dt>Densidad</dt>
       <dd id="statDensity">No disponible</dd>
-      <dt>Variacion</dt>
+      <dt>Variación</dt>
       <dd id="statVariation">No disponible</dd>
     </dl>
     <svg id="sparkline" viewBox="0 0 240 42" aria-hidden="true">
@@ -301,12 +396,12 @@
         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
       </svg></button>
-    <button class="navbtn" id="pitchupbtn" aria-label="Aumentar inclinacion"><svg width="18" height="18"
+    <button class="navbtn" id="pitchupbtn" aria-label="Aumentar inclinación"><svg width="18" height="18"
         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round" aria-hidden="true" focusable="false">
         <path d="m18 15-6-6-6 6" />
       </svg></button>
-    <button class="navbtn" id="pitchdownbtn" aria-label="Reducir inclinacion"><svg width="18" height="18"
+    <button class="navbtn" id="pitchdownbtn" aria-label="Reducir inclinación"><svg width="18" height="18"
         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round" aria-hidden="true" focusable="false">
         <path d="m6 9 6 6 6-6" />
@@ -364,10 +459,84 @@
 
   <!-- animation -->
   <div id="narrativebox" class="ef1">
-    <div id="narbody">
-
-    </div>
+    <div id="narbody"></div>
     <div id="nextbtn"></div>
+  </div>
+
+  <!-- Modal de información detallada (Opción B) -->
+  <div id="info-modal" class="info-modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-info-title">
+    <div class="info-modal-container">
+      <div class="info-modal-header">
+        <div class="info-modal-title-group">
+          <div class="info-modal-badge" aria-hidden="true">SC</div>
+          <div>
+            <h2 id="modal-info-title">Área Metropolitana de Santa Cruz</h2>
+            <div class="info-modal-subtitle">Información detallada y metodología</div>
+          </div>
+        </div>
+        <button id="close-info-modal" class="info-modal-close" type="button" aria-label="Cerrar modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="info-modal-body">
+        <section class="modal-section" aria-labelledby="modal-intro-head">
+          <h3 id="modal-intro-head">Área Metropolitana de Santa Cruz</h3>
+          <p>
+            Este mapa interactivo presenta una lectura espacial de la población del Área Metropolitana de Santa Cruz de la Sierra, Bolivia. La información se representa mediante columnas sobre una grilla para facilitar la comparación visual entre celdas y reconocer dónde aparecen concentraciones mayores o menores dentro del ámbito mostrado. En esta página, “área metropolitana” describe la extensión geográfica incluida en la visualización; no constituye una delimitación jurídica, una definición de límites municipales ni un cálculo del total metropolitano.
+          </p>
+        </section>
+
+        <section class="modal-section" aria-labelledby="modal-interp-head">
+          <h3 id="modal-interp-head">Cómo interpretar el mapa</h3>
+          <p>
+            Cada columna corresponde a una celda censal representada en el mapa. Su altura y su color expresan el rango de población registrado para esa celda: las columnas más altas permiten localizar valores mayores y las más bajas señalan valores menores. La leyenda conserva siete intervalos, desde 11–187 habitantes hasta 3.307–9.940 habitantes. Estos rangos sirven para comparar sectores; no deben sumarse visualmente para obtener una cifra oficial del conjunto metropolitano.
+          </p>
+          <p>
+            El visor permite acercar o alejar la cámara, orbitar el modelo y cambiar a una vista cenital. También es posible seleccionar una celda para consultar su población y activar o desactivar las capas disponibles. El río Piraí funciona como referencia territorial para orientar la lectura espacial. Su presencia en el mapa no implica por sí sola una relación causal con la distribución observada.
+          </p>
+        </section>
+
+        <section class="modal-section" aria-labelledby="modal-datos-head">
+          <h3 id="modal-datos-head">Datos utilizados</h3>
+          <p>
+            Censo de Población y Vivienda 2024 del Instituto Nacional de Estadística (INE) de Bolivia. El Censo 2024 aporta los datos de población; no es el autor del mapa, del diseño visual ni del procesamiento cartográfico presentado en este sitio. La elaboración del proyecto y su publicación web corresponden a <a href="https://gustavocaceresmartinez.com/" target="_blank" rel="author">Gustavo Abel Cáceres Martínez</a>.
+          </p>
+          <p>
+            Esta página no atribuye al INE la selección gráfica, la representación en columnas ni la experiencia interactiva. Tampoco declara una metodología adicional, una lista de municipios integrantes o una cifra total del Área Metropolitana de Santa Cruz que no esté documentada aquí. Para consultar cifras, definiciones y publicaciones oficiales, visita el <a href="https://cpv2024.ine.gob.bo/" target="_blank" rel="noopener noreferrer">portal del Censo 2024 del INE</a>.
+          </p>
+        </section>
+
+        <section class="modal-section" aria-labelledby="modal-app-head">
+          <h3 id="modal-app-head">Aplicaciones del mapa</h3>
+          <p>
+            El mapa puede utilizarse como herramienta exploratoria para reconocer patrones espaciales, comparar concentraciones de población y formular preguntas sobre la organización del territorio. También puede apoyar actividades educativas, comunicación cartográfica y lecturas preliminares relacionadas con planificación urbana, acceso a servicios o análisis ambiental, siempre que sus resultados se contrasten con información oficial y estudios específicos.
+          </p>
+          <p>
+            La visualización no reemplaza una certificación estadística, un estudio demográfico ni un instrumento de ordenamiento territorial. Antes de tomar decisiones, conviene verificar la cobertura geográfica, el año de referencia y las definiciones empleadas por la fuente. Para conocer otros trabajos del autor, consulta el <a href="https://gustavocaceresmartinez.com/geoportafolio.html" target="_blank" rel="noopener noreferrer">geoportafolio de mapas y proyectos SIG</a>.
+          </p>
+        </section>
+
+        <div class="modal-meta-footer">
+          <div class="modal-meta-row">
+            <span class="modal-meta-title">Fuente de datos:</span>
+            <a href="https://cpv2024.ine.gob.bo/" target="_blank" rel="noopener noreferrer">Instituto Nacional de Estadística (INE) de Bolivia, Censo de Población y Vivienda 2024</a>. Proyecto cartográfico independiente; esta visualización no es un producto oficial del INE.
+          </div>
+          <div id="designcredit" class="modal-meta-row">
+            <span class="modal-meta-title">Mapa y procesamiento cartográfico:</span>
+            <a href="https://gustavocaceresmartinez.com/" target="_blank" rel="author">Gustavo Abel Cáceres Martínez</a>
+          </div>
+          <nav class="modal-maplinks" aria-label="Enlaces relacionados">
+            <a href="https://gustavocaceresmartinez.com/" target="_blank" rel="author">Sitio profesional del autor</a>
+            <span class="modal-link-sep">•</span>
+            <a href="https://gustavocaceresmartinez.com/geoportafolio.html" target="_blank" rel="noopener noreferrer">Más mapas y proyectos SIG</a>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="./js/constants.js"></script>

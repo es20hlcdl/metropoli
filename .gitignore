@@ -1,0 +1,23 @@
+# Documentos y carpetas de Asistentes de IA
+.codex/
+.agents/
+.gemini/
+.claude/
+.cursor/
+.windsurf/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+# Archivos de configuración local y claves privadas
+js/config.local.js
+*.local.js
+!js/config.local.example.js
+
+# Entornos y editores
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

@@ -23,6 +23,22 @@ var container = document.getElementById("view"),
     var lightPalette = [0xf7fcf5, 0xe5f5e0, 0xc7e9c0, 0xa1d99b, 0x74c476, 0x31a354, 0x006d2c];
     var darkPalette = [0x1f1a3a, 0x481e64, 0x781c6d, 0xa81c60, 0xd02c40, 0xe8682c, 0xf2b84b];
     var isDarkMode = false; // Por defecto siempre empieza con el Modo Claro
+    var cartoBasemapVisible = true;
+
+    function getCartoApiKey() {
+      return (window.CARTO_BASEMAP_API_KEY || "cb1_2wxc_1_8f1fb6a34a44a8844d1a3805").trim();
+    }
+
+    function addCartoApiKey(url) {
+      var apiKey = getCartoApiKey();
+      if (!apiKey || !url) return url;
+      if (url.indexOf("cartocdn.com") === -1 && url.indexOf("carto.com") === -1) return url;
+      var separator = url.indexOf("?") === -1 ? "?" : "&";
+      var params = [];
+      if (url.indexOf("key=") === -1) params.push("key=" + encodeURIComponent(apiKey));
+      if (url.indexOf("api_key=") === -1) params.push("api_key=" + encodeURIComponent(apiKey));
+      return params.length ? url + separator + params.join("&") : url;
+    }
 
     app.init(container);       // initialize viewer
     app.highlightMaterial = new THREE.MeshLambertMaterial({
@@ -100,7 +116,7 @@ var container = document.getElementById("view"),
     });
     document.getElementById("layertoggle").addEventListener("click", toggleMobileLayerControls);
     document.getElementById("layerscrim").addEventListener("click", closeMobileLayerControls);
-    document.getElementById("mapnoteToggle").addEventListener("click", toggleMapNoteText);
+    setupInfoModal();
     
     document.getElementById("desktop-layer-toggle").addEventListener("click", function (event) {
       event.stopPropagation();
@@ -127,10 +143,10 @@ var container = document.getElementById("view"),
       }
     });
 
-    document.querySelector("#designcredit a").addEventListener("click", function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      window.open(this.href, "_blank", "noopener");
+    document.querySelectorAll("a[href*='gustavocaceresmartinez.com']").forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        event.stopPropagation();
+      });
     });
     window.addEventListener("resize", function () {
       syncMobileOverlayLayout();
@@ -344,15 +360,62 @@ var container = document.getElementById("view"),
       syncMobileOverlayLayout();
     }
 
-    function toggleMapNoteText() {
-      var note = document.getElementById("mapnote");
-      var toggle = document.getElementById("mapnoteToggle");
-      var expanded = !note.classList.contains("expanded");
+    function setupInfoModal() {
+      var modal = document.getElementById("info-modal");
+      var openBtn = document.getElementById("open-info-modal");
+      var closeBtn = document.getElementById("close-info-modal");
+      if (!modal) return;
 
-      note.classList.toggle("expanded", expanded);
-      toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
-      toggle.textContent = expanded ? "Ver menos" : "Ver mas";
-      syncMobileOverlayLayout();
+      function openModal() {
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      if (openBtn) {
+        openBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          openModal();
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          closeModal();
+        });
+      }
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      var container = modal.querySelector(".info-modal-container");
+      if (container) {
+        container.addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+        container.addEventListener("mousedown", function (e) {
+          e.stopPropagation();
+        });
+        container.addEventListener("wheel", function (e) {
+          e.stopPropagation();
+        }, { passive: true });
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+          closeModal();
+        }
+      });
     }
 
     function applyPopulationThreshold() {
@@ -649,7 +712,8 @@ var container = document.getElementById("view"),
 
       [
         { id: populationLayerId, name: "Poblacion", symbol: "population" },
-        { id: 0, name: "Rio Pirai", symbol: "river" }
+        { id: 0, name: "Rio Pirai", symbol: "river" },
+        { id: "basemap", name: "Mapa base CARTO", symbol: "basemap" }
       ].forEach(function (item) {
         var row = document.createElement("div");
         row.className = "layer-control";
@@ -677,8 +741,24 @@ var container = document.getElementById("view"),
 
     function setLayerVisibility(layerId, visible) {
       if (layerId === "basemap") {
-        var basemap = app.scene && app.scene.getObjectByName ? app.scene.getObjectByName("CARTO Positron basemap without labels") : null;
-        if (basemap) basemap.visible = visible;
+        cartoBasemapVisible = visible;
+
+        if (activeBasemapMesh) activeBasemapMesh.visible = visible;
+        if (dynamicBasemapMesh) dynamicBasemapMesh.visible = visible;
+        if (dynamicViewportMesh) dynamicViewportMesh.visible = visible;
+        if (dynamicBasemapGroup) dynamicBasemapGroup.visible = visible;
+
+        if (app.scene && app.scene.traverse) {
+          app.scene.traverse(function (obj) {
+            if (obj.name && (obj.name.indexOf("CARTO") !== -1 || obj.name.indexOf("basemap") !== -1)) {
+              obj.visible = visible;
+            }
+          });
+        }
+
+        if (visible) {
+          updateDynamicBasemap(true);
+        }
         app.render();
         return;
       }
@@ -690,11 +770,27 @@ var container = document.getElementById("view"),
 
     function setLayerOpacity(layerId, opacity) {
       if (layerId === "basemap") {
-        var basemap = app.scene && app.scene.getObjectByName ? app.scene.getObjectByName("CARTO Positron basemap without labels") : null;
-        if (basemap && basemap.material) {
-          basemap.material.transparent = opacity < 1;
-          basemap.material.opacity = opacity;
-          basemap.material.needsUpdate = true;
+        var applyOpacity = function (obj) {
+          if (!obj || !obj.material) return;
+          var mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+          mats.forEach(function (mat) {
+            mat.transparent = opacity < 1;
+            mat.opacity = opacity;
+            mat.needsUpdate = true;
+          });
+        };
+        applyOpacity(activeBasemapMesh);
+        applyOpacity(dynamicBasemapMesh);
+        applyOpacity(dynamicViewportMesh);
+        if (dynamicBasemapGroup && dynamicBasemapGroup.traverse) {
+          dynamicBasemapGroup.traverse(applyOpacity);
+        }
+        if (app.scene && app.scene.traverse) {
+          app.scene.traverse(function (obj) {
+            if (obj.name && (obj.name.indexOf("CARTO") !== -1 || obj.name.indexOf("basemap") !== -1)) {
+              applyOpacity(obj);
+            }
+          });
         }
         app.render();
         return;
@@ -723,7 +819,7 @@ var container = document.getElementById("view"),
         ? "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         : "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
       var meshName = isDarkMode ? "CARTO Dark Matter basemap" : "CARTO Positron basemap";
-      addBasemap(app.scene, styleUrl, meshName);
+      addBasemap(app.scene, addCartoApiKey(styleUrl), meshName);
     }
 
     // Theme Toggle & Palettes Update
@@ -1700,14 +1796,14 @@ var container = document.getElementById("view"),
       var servers = ["a", "b", "c", "d"];
       var server = servers[Math.abs(x + y) % servers.length];
       var theme = isDarkMode ? "dark_nolabels" : "light_nolabels";
-      return "https://" + server + ".basemaps.cartocdn.com/" + theme + "/" + z + "/" + x + "/" + y + ".png";
+      return addCartoApiKey("https://" + server + ".basemaps.cartocdn.com/" + theme + "/" + z + "/" + x + "/" + y + ".png");
     }
 
     function labelTileUrl(z, x, y) {
       var servers = ["a", "b", "c", "d"];
       var server = servers[Math.abs(x + y) % servers.length];
       var theme = isDarkMode ? "dark_only_labels" : "light_only_labels";
-      return "https://" + server + ".basemaps.cartocdn.com/" + theme + "/" + z + "/" + x + "/" + y + ".png";
+      return addCartoApiKey("https://" + server + ".basemaps.cartocdn.com/" + theme + "/" + z + "/" + x + "/" + y + ".png");
     }
 
     function satelliteTileUrl(z, x, y) {
@@ -1852,6 +1948,7 @@ var container = document.getElementById("view"),
 
     function updateDynamicBasemap(force) {
       if (!app.sceneLoaded || !app.scene || !app.camera || !app.controls) return;
+      if (!cartoBasemapVisible) return;
 
       var now = performance.now();
       if (!force && now - dynamicBasemapLastUpdate < 220) return;
@@ -1973,6 +2070,7 @@ var container = document.getElementById("view"),
         mesh.name = "Dynamic CARTO basemap mosaic z" + z;
         mesh.position.set(be.cx - origin.x, be.cy - origin.y, -0.66);
         mesh.renderOrder = -998;
+        mesh.visible = cartoBasemapVisible;
 
         if (dynamicBasemapMesh) {
           app.scene.remove(dynamicBasemapMesh);
@@ -2103,6 +2201,7 @@ var container = document.getElementById("view"),
         mesh.name = "Dynamic CARTO viewport mosaic z" + z;
         mesh.position.set((meshWest + meshEast) / 2 - origin.x, (meshSouth + meshNorth) / 2 - origin.y, -0.64);
         mesh.renderOrder = -997;
+        mesh.visible = cartoBasemapVisible;
 
         if (dynamicViewportMesh) {
           app.scene.remove(dynamicViewportMesh);
@@ -2200,7 +2299,7 @@ var container = document.getElementById("view"),
 
         if (dynamicBasemapGroup && dynamicViewportSignature.indexOf(tile.key) !== -1) {
           dynamicBasemapGroup.add(mesh);
-          mesh.visible = true;
+          mesh.visible = cartoBasemapVisible;
         } else {
           mesh.visible = false;
         }
@@ -2389,6 +2488,9 @@ var container = document.getElementById("view"),
           var map = new maplibregl.Map({
             container: mapNode,
             style: style,
+            transformRequest: function (url) {
+              return { url: addCartoApiKey(url) };
+            },
             bounds: [sw, ne],
             fitBoundsOptions: { padding: 0 },
             interactive: false,
@@ -2415,12 +2517,15 @@ var container = document.getElementById("view"),
             mesh.name = meshName;
             mesh.position.set(be.cx - origin.x, be.cy - origin.y, -0.75);
             mesh.renderOrder = -1000;
+            mesh.visible = cartoBasemapVisible;
             scene.add(mesh);
             scene.updateMatrixWorld();
 
             activeBasemapMesh = mesh;
             app.render();
-            updateDynamicBasemap(true);
+            if (cartoBasemapVisible) {
+              updateDynamicBasemap(true);
+            }
 
             status.textContent = "Mapa base cargado";
             markLoadingBasemapReady("MAPA BASE CARGADO");

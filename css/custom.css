@@ -248,6 +248,10 @@
       letter-spacing: -0.01em;
     }
 
+    #appheading {
+      min-width: 0;
+    }
+
     #appsubtitle {
       margin-top: 3px;
       color: var(--text-secondary);
@@ -417,7 +421,11 @@
     }
 
     .layer-symbol.basemap {
-      background: #e8ece7;
+      background: #78909c;
+    }
+
+    .layer-symbol.satellite {
+      background: #4f7891;
     }
 
     /* Navigation Divider */
@@ -657,16 +665,13 @@
       pointer-events: auto;
     }
 
-    #mapnote strong {
+    #mapnote h2 {
       display: block;
-      margin-bottom: 6px;
+      margin: 0 0 6px;
       color: var(--text-primary);
       font-size: 14px;
       font-weight: 800;
-    }
-
-    #mobileMapTitle {
-      display: none;
+      line-height: 1.3;
     }
 
     #mapnotetext {
@@ -674,8 +679,298 @@
       color: var(--text-secondary);
     }
 
-    #mapnoteToggle {
-      display: none;
+    /* Breve descripción en panel principal */
+    .brief-desc-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .brief-desc-title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+
+    .brief-desc-text {
+      margin: 0;
+      font-size: 12.5px;
+      line-height: 1.48;
+      color: var(--text-secondary);
+    }
+
+    .brief-meta-card {
+      margin-top: 2px;
+      padding: 9px 11px;
+      border: 1px solid var(--border-panel);
+      border-radius: 10px;
+      background: rgba(18, 108, 67, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--text-secondary);
+    }
+
+    html.dark-mode .brief-meta-card {
+      background: rgba(26, 160, 166, 0.05);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .brief-meta-label {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .brief-meta-item a {
+      color: var(--accent-color);
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .brief-meta-item a:hover {
+      text-decoration: underline;
+    }
+
+    .external-icon {
+      flex-shrink: 0;
+    }
+
+    .btn-saber-mas {
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--accent-color);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--accent-color);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-saber-mas:hover {
+      background: var(--accent-gradient);
+      border-color: transparent;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(18, 108, 67, 0.25);
+    }
+
+    html.dark-mode .btn-saber-mas:hover {
+      box-shadow: 0 4px 12px rgba(26, 160, 166, 0.25);
+    }
+
+    /* Modal de Información (Opción B) */
+    .info-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(10, 18, 14, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .info-modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .info-modal-container {
+      width: 100%;
+      max-width: 620px;
+      max-height: 84vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 20px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-panel);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28), 0 4px 16px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      overflow: hidden;
+      transform: scale(0.95) translateY(12px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .info-modal-backdrop.active .info-modal-container {
+      transform: scale(1) translateY(0);
+    }
+
+    .info-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border-divider);
+    }
+
+    .info-modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .info-modal-badge {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(18, 108, 67, 0.2);
+    }
+
+    #modal-info-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+
+    .info-modal-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .info-modal-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--border-panel);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .info-modal-close:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      transform: scale(1.06);
+    }
+
+    .info-modal-body {
+      padding: 20px 24px 24px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .info-modal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .info-modal-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .info-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(18, 108, 67, 0.2);
+      border-radius: 6px;
+    }
+
+    html.dark-mode .info-modal-body::-webkit-scrollbar-thumb {
+      background: rgba(26, 160, 166, 0.3);
+    }
+
+    .modal-section h3 {
+      margin: 0 0 8px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .modal-section p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .modal-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .modal-section a {
+      color: var(--accent-color);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .modal-meta-footer {
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-divider);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+
+    .modal-meta-title {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .modal-meta-footer a {
+      color: var(--accent-color);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .modal-maplinks {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    .modal-link-sep {
+      color: var(--text-secondary);
+      opacity: 0.5;
     }
 
     #toolbtns {
@@ -1193,28 +1488,19 @@
     }
 
     #datasource {
-      margin-top: 8px;
-      padding: 8px 12px;
-      border: 1px solid var(--border-panel);
-      border-radius: 10px;
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-divider);
       color: var(--text-secondary);
-      background: var(--bg-panel);
-      box-shadow: var(--shadow-panel);
-      backdrop-filter: blur(10px);
       font-size: 11px;
       font-weight: 500;
       line-height: 1.35;
     }
 
     #designcredit {
-      margin-top: 6px;
-      padding: 8px 12px;
-      border: 1px solid var(--border-panel);
-      border-radius: 10px;
+      margin-top: 8px;
+      padding: 0;
       color: var(--text-secondary);
-      background: var(--bg-panel);
-      box-shadow: var(--shadow-panel);
-      backdrop-filter: blur(10px);
       font-size: 11px;
       font-weight: 500;
       line-height: 1.35;
@@ -1234,6 +1520,24 @@
     #designcredit a:hover {
       opacity: 0.8;
       text-decoration: underline;
+    }
+
+    #datasource a,
+    #maplinks a {
+      color: var(--accent-color);
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    #maplinks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.35;
     }
 
     .external-link-icon {
@@ -1383,6 +1687,17 @@
 
     #heightscale::after {
       display: none;
+    }
+
+    @media (min-width: 721px) {
+      #heightlegend {
+        top: auto;
+        right: auto;
+        bottom: 20px;
+        left: 20px;
+        max-height: calc(100dvh - 280px);
+        overflow-y: auto;
+      }
     }
 
     #statsPanel {
@@ -1604,8 +1919,31 @@
         display: none;
       }
 
-      #appbrand>div:not(#appcontrols):not(#mapnote) {
+      #appbrand>div:not(#appcontrols):not(#mapnote):not(#appheading) {
         display: none;
+      }
+
+      #appbrand > #appheading {
+        display: block;
+        width: min(360px, calc(100vw - 92px));
+        margin-left: max(12px, env(safe-area-inset-left));
+        padding: 10px 12px;
+        border: 1px solid var(--border-panel);
+        border-radius: 12px;
+        background: var(--bg-panel);
+        box-shadow: var(--shadow-panel);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        pointer-events: auto;
+      }
+
+      #apptitle {
+        font-size: 15px;
+        line-height: 1.25;
+      }
+
+      #appsubtitle {
+        font-size: 11px;
       }
 
       #appcontrols {
@@ -1878,53 +2216,32 @@
         border-top: 1px solid var(--border-panel);
       }
 
-      #mobileMapTitle {
-        display: block;
-        margin: 0 0 6px;
-        color: var(--text-primary);
-        font-size: 15px;
-        font-weight: 800;
-        line-height: 1.2;
-      }
-
-      #mapnote strong {
+      #mapnote h2 {
         margin-bottom: 4px;
         font-size: 12px;
       }
 
       #mapnotetext {
-        display: -webkit-box;
-        overflow: hidden;
         overflow-wrap: anywhere;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
       }
 
-      #mapnote.expanded #mapnotetext {
-        display: block;
-        -webkit-line-clamp: unset;
+      #mapnote.expanded {
+        max-height: calc(100dvh - var(--mobile-note-top, 132px) - 84px);
       }
 
       #mapnoteToggle {
-        display: inline-flex;
-        align-items: center;
         min-height: 32px;
-        margin-top: 4px;
-        padding: 0;
-        border: 0;
-        color: var(--accent-color);
-        background: transparent;
-        font: 800 11px 'Plus Jakarta Sans', sans-serif;
-        cursor: pointer;
       }
 
       #datasource,
       #designcredit {
-        margin-top: 6px;
-        padding: 6px 10px;
-        font-size: 10px;
+        font-size: 11px;
         line-height: 1.25;
-        border-radius: 8px;
+      }
+
+      #maplinks {
+        gap: 6px 12px;
+        font-size: 11px;
       }
 
       #designcredit a {
@@ -2183,7 +2500,7 @@
         display: none;
       }
 
-      #appbrand>div:not(#appcontrols):not(#mapnote) {
+      #appbrand>div:not(#appcontrols):not(#mapnote):not(#appheading) {
         display: none;
       }
 
@@ -2197,10 +2514,6 @@
 
       #mapnote {
         top: var(--mobile-note-top, 126px);
-      }
-
-      #datasource {
-        display: none;
       }
 
       #heightlegend {
@@ -2243,8 +2556,7 @@
 
     @media (max-width: 360px) {
 
-      #appsubtitle,
-      #mapnote:not(.expanded) #mapnotetext {
+      #appsubtitle {
         display: none;
       }
 
@@ -2274,7 +2586,7 @@
     }
 
     /* Style override for pageinfo h2 to preserve visual formatting from Qgis2threejs.css */
-    #pageinfo > h2 {
+    #pageinfo > [data-nosnippet] > h2 {
       background-color: gray;
       color: white;
       font-size: small;
