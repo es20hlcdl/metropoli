@@ -281,9 +281,12 @@ var container = document.getElementById("view"),
       root.style.setProperty("--mobile-bottom-ui", Math.ceil(navHeight + bottomGap + 18) + "px");
 
       requestAnimationFrame(function () {
-        var noteBottom = mapnote.getBoundingClientRect().bottom;
-        root.style.setProperty("--mobile-layer-button-top", Math.ceil(noteBottom + 12) + "px");
-        root.style.setProperty("--mobile-popups-top", Math.ceil(noteBottom + topGap) + "px");
+        var appheading = document.getElementById("appheading");
+        var isNoteVisible = mapnote && mapnote.offsetParent !== null && window.getComputedStyle(mapnote).display !== "none";
+        var baseBottom = isNoteVisible ? mapnote.getBoundingClientRect().bottom : (appheading ? appheading.getBoundingClientRect().bottom : headerBottom);
+        var layerBtnTop = Math.max(12, Math.ceil(appheading ? appheading.getBoundingClientRect().top : 12));
+        root.style.setProperty("--mobile-layer-button-top", layerBtnTop + "px");
+        root.style.setProperty("--mobile-popups-top", Math.ceil(baseBottom + topGap) + "px");
       });
     }
 
@@ -363,6 +366,7 @@ var container = document.getElementById("view"),
     function setupInfoModal() {
       var modal = document.getElementById("info-modal");
       var openBtn = document.getElementById("open-info-modal");
+      var openHeaderBtn = document.getElementById("open-info-modal-header");
       var closeBtn = document.getElementById("close-info-modal");
       if (!modal) return;
 
@@ -380,6 +384,13 @@ var container = document.getElementById("view"),
 
       if (openBtn) {
         openBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          openModal();
+        });
+      }
+
+      if (openHeaderBtn) {
+        openHeaderBtn.addEventListener("click", function (e) {
           e.stopPropagation();
           openModal();
         });
@@ -1339,7 +1350,8 @@ var container = document.getElementById("view"),
     function syncPopulationPopupPosition() {
       var root = document.documentElement;
       var mapnote = document.getElementById("mapnote");
-      var baseElement = mapnote && mapnote.style.display !== "none" ? mapnote : document.getElementById("header");
+      var isNoteVisible = mapnote && mapnote.offsetParent !== null && window.getComputedStyle(mapnote).display !== "none";
+      var baseElement = isNoteVisible ? mapnote : (document.getElementById("appheading") || document.getElementById("header"));
       var rect = baseElement.getBoundingClientRect();
       var topGap = window.innerWidth <= 720 ? 8 : 12;
       var topVal = rect.bottom + topGap;

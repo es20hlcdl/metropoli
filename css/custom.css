@@ -774,6 +774,10 @@
       box-shadow: 0 4px 12px rgba(26, 160, 166, 0.25);
     }
 
+    .btn-saber-mas-header {
+      display: none;
+    }
+
     /* Modal de Información (Opción B) */
     .info-modal-backdrop {
       position: fixed;
@@ -1881,19 +1885,19 @@
 
       #top-right-controls {
         position: fixed;
-        right: max(16px, env(safe-area-inset-right));
-        top: calc(var(--mobile-layer-button-top, max(16px, env(safe-area-inset-top))) + 60px);
+        right: max(12px, env(safe-area-inset-right));
+        top: calc(max(12px, env(safe-area-inset-top)) + 52px);
         z-index: 1350;
         display: flex !important;
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
         pointer-events: auto;
       }
 
       #themebtn {
         display: inline-flex !important;
-        width: 48px !important;
-        height: 48px !important;
+        width: 44px !important;
+        height: 44px !important;
         border-radius: 50% !important;
         border: 1px solid var(--border-panel) !important;
         background: var(--bg-panel) !important;
@@ -1924,26 +1928,70 @@
       }
 
       #appbrand > #appheading {
-        display: block;
-        width: min(360px, calc(100vw - 92px));
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: min(340px, calc(100vw - 84px));
         margin-left: max(12px, env(safe-area-inset-left));
-        padding: 10px 12px;
+        margin-top: max(12px, env(safe-area-inset-top));
+        padding: 10px 14px;
         border: 1px solid var(--border-panel);
-        border-radius: 12px;
+        border-radius: 14px;
         background: var(--bg-panel);
         box-shadow: var(--shadow-panel);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         pointer-events: auto;
       }
 
       #apptitle {
-        font-size: 15px;
+        font-size: 13.5px;
+        font-weight: 800;
         line-height: 1.25;
+        letter-spacing: -0.01em;
+        margin: 0;
       }
 
       #appsubtitle {
         font-size: 11px;
+        margin-top: 2px;
+        color: var(--text-secondary);
+        line-height: 1.25;
+      }
+
+      .btn-saber-mas-header {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 7px;
+        padding: 5px 12px;
+        border: 1.5px solid var(--accent-color);
+        border-radius: 999px;
+        background: rgba(18, 108, 67, 0.08);
+        color: var(--accent-color);
+        font-family: inherit;
+        font-size: 11.5px;
+        font-weight: 700;
+        cursor: pointer;
+        line-height: 1;
+        width: fit-content;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-saber-mas-header:active {
+        transform: scale(0.96);
+        background: var(--accent-color);
+        color: #ffffff;
+      }
+
+      html.dark-mode .btn-saber-mas-header {
+        background: rgba(46, 204, 113, 0.12);
+        color: var(--accent-color);
+      }
+
+      html.dark-mode .btn-saber-mas-header:active {
+        background: var(--accent-color);
+        color: #121c17;
       }
 
       #appcontrols {
@@ -1954,15 +2002,15 @@
 
       #layertoggle {
         position: fixed;
-        right: max(16px, env(safe-area-inset-right));
-        top: var(--mobile-layer-button-top, max(16px, env(safe-area-inset-top)));
+        right: max(12px, env(safe-area-inset-right));
+        top: max(12px, env(safe-area-inset-top));
         z-index: 1350;
         display: inline-grid;
         align-items: center;
         justify-content: center;
-        width: 48px;
-        height: 48px;
-        min-height: 48px;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
         padding: 0;
         border: 1px solid var(--border-panel);
         border-radius: 999px;
@@ -2196,41 +2244,7 @@
       }
 
       #mapnote {
-        position: absolute;
-        top: var(--mobile-note-top, 132px);
-        right: max(12px, env(safe-area-inset-right));
-        left: max(12px, env(safe-area-inset-left));
-        width: auto;
-        max-width: none;
-        padding: 12px;
-        font-size: 12px;
-        line-height: 1.45;
-        z-index: 1200;
-        border-radius: 14px;
-        border: 1px solid var(--border-panel);
-        background: var(--bg-panel);
-        box-shadow: var(--shadow-panel);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        margin-top: 0;
-        border-top: 1px solid var(--border-panel);
-      }
-
-      #mapnote h2 {
-        margin-bottom: 4px;
-        font-size: 12px;
-      }
-
-      #mapnotetext {
-        overflow-wrap: anywhere;
-      }
-
-      #mapnote.expanded {
-        max-height: calc(100dvh - var(--mobile-note-top, 132px) - 84px);
-      }
-
-      #mapnoteToggle {
-        min-height: 32px;
+        display: none !important;
       }
 
       #datasource,
@@ -2474,7 +2488,6 @@
     @media (max-width: 480px) {
 
       #header,
-      #mapnote,
       #heightlegend {
         left: max(8px, env(safe-area-inset-left));
         right: max(8px, env(safe-area-inset-right));
@@ -2510,10 +2523,6 @@
 
       .layer-control input[type="range"] {
         display: none;
-      }
-
-      #mapnote {
-        top: var(--mobile-note-top, 126px);
       }
 
       #heightlegend {
