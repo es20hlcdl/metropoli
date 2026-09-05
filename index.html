@@ -128,7 +128,10 @@
   <!-- Contenido principal e introducción del mapa -->
   <main id="header" aria-labelledby="apptitle">
     <div id="appbrand">
-      <div id="appmark" aria-hidden="true">SC</div>
+      <div id="appbrand-header">
+        <button id="appmark" class="appmark-btn" type="button" aria-haspopup="dialog" aria-controls="image-modal" title="Ver imagen completa" aria-label="Ver imagen completa del Área Metropolitana">
+          <img src="./assets/img_logo_.jpeg" alt="Logo Área Metropolitana de Santa Cruz" width="44" height="44">
+        </button>
       <div id="appheading">
         <h1 id="apptitle">Mapa de población del Área Metropolitana de Santa Cruz</h1>
         <div id="appsubtitle">Santa Cruz de la Sierra, Bolivia</div>
@@ -140,6 +143,7 @@
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
         </button>
+      </div>
       </div>
       <div id="appcontrols">
         <button id="layertoggle" type="button" aria-expanded="true" aria-controls="layercontrols"
@@ -548,6 +552,27 @@
             </nav>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de imagen completa (Lightbox del logotipo) -->
+  <div id="image-modal" class="image-modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="image-modal-title">
+    <div class="image-modal-container">
+      <div class="image-modal-header">
+        <div>
+          <h2 id="image-modal-title" class="image-modal-title">Área Metropolitana de Santa Cruz</h2>
+          <div class="image-modal-subtitle">Huella urbana y referencia territorial del Río Piraí</div>
+        </div>
+        <button id="close-image-modal" class="image-modal-close" type="button" aria-label="Cerrar imagen">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="image-modal-body">
+        <img src="./assets/img_logo_.jpeg" alt="Área Metropolitana de Santa Cruz y Río Piraí" class="image-modal-full">
       </div>
     </div>
   </div>

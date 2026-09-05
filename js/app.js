@@ -117,6 +117,7 @@ var container = document.getElementById("view"),
     document.getElementById("layertoggle").addEventListener("click", toggleMobileLayerControls);
     document.getElementById("layerscrim").addEventListener("click", closeMobileLayerControls);
     setupInfoModal();
+    setupImageModal();
     
     document.getElementById("desktop-layer-toggle").addEventListener("click", function (event) {
       event.stopPropagation();
@@ -425,6 +426,60 @@ var container = document.getElementById("view"),
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape" && modal.classList.contains("active")) {
           closeModal();
+        }
+      });
+    }
+
+    function setupImageModal() {
+      var modal = document.getElementById("image-modal");
+      var trigger = document.getElementById("appmark");
+      var closeBtn = document.getElementById("close-image-modal");
+      if (!modal || !trigger) return;
+
+      function openImageModal() {
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeImageModal() {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      trigger.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openImageModal();
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          closeImageModal();
+        });
+      }
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          closeImageModal();
+        }
+      });
+
+      var container = modal.querySelector(".image-modal-container");
+      if (container) {
+        container.addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+        container.addEventListener("mousedown", function (e) {
+          e.stopPropagation();
+        });
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+          closeImageModal();
         }
       });
     }
